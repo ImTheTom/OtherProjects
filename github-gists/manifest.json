@@ -1,0 +1,21 @@
+{
+  "name": "View Github profile gists",
+  "description": "Adds a button to visit a profile's gists",
+  "version": "1.0",
+  "permissions": [
+    "activeTab"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://github.com/*"],
+      "js": ["jquery-3.6.0.min.js", "content-script.js"]
+    }
+  ],
+  "browser_action": {
+    "default_title": "Github profile gists"
+  },
+  "icons": {
+    "48": "icon48.ico"
+  },
+  "manifest_version": 2
+}
