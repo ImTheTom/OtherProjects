@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  bot:
+    build:
+      context: ../.
+      dockerfile: build/Dockerfile
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ../:/app
+    restart: unless-stopped
