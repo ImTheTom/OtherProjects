@@ -20,7 +20,7 @@ func Init() {
 	}
 
 	// Register the messageCreate func as a callback for MessageCreate events.
-	session.AddHandler(messageCreate)
+	session.AddHandler(StandardChatMessages)
 
 	// In this example, we only care about receiving message events.
 	session.Identify.Intents = discordgo.IntentsGuildMessages

@@ -31,7 +31,6 @@ linters:
   - goimports
   - gomnd
   - goprintffuncname
-  - gosec
   - ifshort
   - lll
   - makezero

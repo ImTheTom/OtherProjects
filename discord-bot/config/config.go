@@ -9,6 +9,8 @@ import (
 type Config struct {
 	BotToken           string `json:"botToken"`
 	DatabaseConnection string `json:"databaseConnection"`
+	Prefix             string `json:"prefix"`
+	GuildID            string `json:"guild_id"`
 }
 
 const configFile = "./config/config.json"
@@ -41,6 +43,14 @@ func sanityCheckValues() error {
 	}
 
 	if len(config.DatabaseConnection) == 0 {
+		return errBadConfig
+	}
+
+	if len(config.Prefix) == 0 {
+		return errBadConfig
+	}
+
+	if len(config.GuildID) == 0 {
 		return errBadConfig
 	}
 

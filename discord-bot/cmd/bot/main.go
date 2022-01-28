@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"os"
 	"os/signal"
 	"syscall"
@@ -15,6 +16,8 @@ import (
 const sleepTime = 5
 
 func main() {
+	rand.Seed(time.Now().UTC().UnixNano())
+
 	if err := config.Init(); err != nil {
 		panic(err)
 	}
