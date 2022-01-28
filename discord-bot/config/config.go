@@ -7,7 +7,8 @@ import (
 )
 
 type Config struct {
-	BotToken string `json:"botToken"`
+	BotToken           string `json:"botToken"`
+	DatabaseConnection string `json:"databaseConnection"`
 }
 
 const configFile = "./config/config.json"

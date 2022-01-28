@@ -27,9 +27,7 @@ func Init() {
 
 	err = session.Open()
 	if err != nil {
-		fmt.Println("error opening connection,", err)
-
-		return
+		panic(err)
 	}
 
 	sess = session
@@ -40,7 +38,9 @@ func GetSession() *discordgo.Session {
 		return sess
 	}
 
-	return nil
+	Init()
+
+	return sess
 }
 
 func CloseBot() {
