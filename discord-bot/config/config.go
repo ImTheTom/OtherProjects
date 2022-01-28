@@ -40,5 +40,9 @@ func sanityCheckValues() error {
 		return errBadConfig
 	}
 
+	if len(config.DatabaseConnection) == 0 {
+		return errBadConfig
+	}
+
 	return nil
 }
