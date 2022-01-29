@@ -23,7 +23,8 @@ func Init() {
 
 	session.AddHandler(ImageUploadMessage)
 
-	session.Identify.Intents = discordgo.IntentsGuildMessages
+	// Maybe revisit if needbe
+	session.Identify.Intents = discordgo.IntentsGuildMessages | discordgo.IntentsGuilds | discordgo.IntentsGuildVoiceStates
 
 	err = session.Open()
 	if err != nil {
