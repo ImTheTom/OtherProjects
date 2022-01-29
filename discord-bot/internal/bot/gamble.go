@@ -25,7 +25,11 @@ const (
 	allPointsGamble      = "all"
 )
 
-var errInvalidGambleAmount = errors.New("Invalid Gamble Amount")
+var (
+	errInvalidGambleAmount = errors.New("Invalid Gamble Amount")
+	errRateLimitGamble     = errors.New("Can't gamble so quickly")
+	errNoPoints            = errors.New("You have no points")
+)
 
 func GambleInteractions(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// Ignore all messages created by the bot itself
@@ -92,39 +96,9 @@ func leaderBoardMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 }
 
 func gamblePoints(s *discordgo.Session, m *discordgo.MessageCreate, amountParam string) {
-	user, err := db.FindByUserIDAndGuildID(helper.CreateContextWithTimeout(), m.Author.ID, m.GuildID)
+	user, err := checkGambleIsSane(m)
 	if err != nil {
-		fmt.Printf("%v\n", err)
-
-		return
-	}
-
-	gamble, err := db.FindLatestGambleForUser(helper.CreateContextWithTimeout(), user)
-	if err != nil {
-		if err.Error() != "no rows in result set" {
-			fmt.Printf("%v\n", err)
-
-			return
-		}
-	}
-
-	if gamble.ID != 0 {
-		currentTime := time.Now()
-
-		t3 := currentTime.Sub(gamble.CreatedAt)
-		if t3 < time.Minute {
-			if _, err := s.ChannelMessageSend(m.ChannelID, "Can't gamble so quickly"); err != nil {
-				fmt.Printf("failed to send message %v\n", err)
-			}
-
-			return
-		}
-	}
-
-	if user.Points == 0 {
-		if _, err := s.ChannelMessageSend(m.ChannelID, "You have no points"); err != nil {
-			fmt.Printf("failed to send message %v\n", err)
-		}
+		communicateStandardMessage(s, m, err.Error())
 
 		return
 	}
@@ -142,9 +116,7 @@ func gamblePoints(s *discordgo.Session, m *discordgo.MessageCreate, amountParam 
 	} else {
 		currentPoints, err = calulatePointsLessThanAll(user, amountParam, winner)
 		if err != nil {
-			if _, err := s.ChannelMessageSend(m.ChannelID, "Invalid gamble amount"); err != nil {
-				fmt.Printf("failed to send message %v\n", err)
-			}
+			communicateStandardMessage(s, m, "Invalid gamble amount")
 
 			return
 		}
@@ -158,15 +130,46 @@ func gamblePoints(s *discordgo.Session, m *discordgo.MessageCreate, amountParam 
 
 	if winner {
 		winnerMessage := fmt.Sprintf("You won %s! Total points is now %d.", user.Username, user.Points)
-		if _, err := s.ChannelMessageSend(m.ChannelID, winnerMessage); err != nil {
-			fmt.Printf("failed to send message %v\n", err)
-		}
+		communicateStandardMessage(s, m, winnerMessage)
 	} else {
-		winnerMessage := fmt.Sprintf("You lost %s. Total points is now %d.", user.Username, user.Points)
-		if _, err := s.ChannelMessageSend(m.ChannelID, winnerMessage); err != nil {
-			fmt.Printf("failed to send message %v\n", err)
+		loserMessage := fmt.Sprintf("You lost %s. Total points is now %d.", user.Username, user.Points)
+		communicateStandardMessage(s, m, loserMessage)
+	}
+}
+
+func communicateStandardMessage(s *discordgo.Session, m *discordgo.MessageCreate, message string) {
+	if _, err := s.ChannelMessageSend(m.ChannelID, message); err != nil {
+		fmt.Printf("failed to send message %v\n", err)
+	}
+}
+
+func checkGambleIsSane(m *discordgo.MessageCreate) (model.User, error) {
+	user, err := db.FindByUserIDAndGuildID(helper.CreateContextWithTimeout(), m.Author.ID, m.GuildID)
+	if err != nil {
+		return user, err
+	}
+
+	gamble, err := db.FindLatestGambleForUser(helper.CreateContextWithTimeout(), user)
+	if err != nil {
+		if err.Error() != "no rows in result set" {
+			return user, err
 		}
 	}
+
+	if gamble.ID != 0 {
+		currentTime := time.Now()
+
+		t3 := currentTime.Sub(gamble.CreatedAt)
+		if t3 < time.Minute {
+			return user, errRateLimitGamble
+		}
+	}
+
+	if user.Points <= 0 {
+		return user, errNoPoints
+	}
+
+	return user, nil
 }
 
 func calulatePointsAll(user model.User, winner bool) int {
