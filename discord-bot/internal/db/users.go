@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/ImTheTom/OtherProjects/discord-bot/model"
 )
@@ -10,8 +9,6 @@ import (
 func FindByUserIDAndGuildID(ctx context.Context, userID, guildID string) (model.User, error) {
 	user := model.User{}
 	db := GetDatabase()
-
-	fmt.Printf("USER - %s Guild %s\n", userID, guildID)
 
 	err := db.QueryRow(
 		ctx,

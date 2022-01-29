@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/ImTheTom/OtherProjects/discord-bot/config"
 	"github.com/ImTheTom/OtherProjects/discord-bot/internal/db"
@@ -94,6 +95,30 @@ func gamblePoints(s *discordgo.Session, m *discordgo.MessageCreate, amountParam 
 	user, err := db.FindByUserIDAndGuildID(helper.CreateContextWithTimeout(), m.Author.ID, m.GuildID)
 	if err != nil {
 		fmt.Printf("%v\n", err)
+
+		return
+	}
+
+	gamble, err := db.FindLatestGambleForUser(helper.CreateContextWithTimeout(), user)
+	if err != nil {
+		if err.Error() != "no rows in result set" {
+			fmt.Printf("%v\n", err)
+
+			return
+		}
+	}
+
+	if gamble.ID != 0 {
+		currentTime := time.Now()
+
+		t3 := currentTime.Sub(gamble.CreatedAt)
+		if t3 < time.Minute {
+			if _, err := s.ChannelMessageSend(m.ChannelID, "Can't gamble so quickly"); err != nil {
+				fmt.Printf("failed to send message %v\n", err)
+			}
+
+			return
+		}
 	}
 
 	if user.Points == 0 {
@@ -145,6 +170,8 @@ func gamblePoints(s *discordgo.Session, m *discordgo.MessageCreate, amountParam 
 }
 
 func calulatePointsAll(user model.User, winner bool) int {
+	SaveGamble(user, user.Points, winner)
+
 	if winner {
 		return user.Points * allPointsGambleWin
 	}
@@ -170,5 +197,21 @@ func calulatePointsLessThanAll(user model.User, amountParam string, winner bool)
 		currentPoints = user.Points - gambleAmount
 	}
 
+	SaveGamble(user, gambleAmount, winner)
+
 	return currentPoints, nil
+}
+
+func SaveGamble(user model.User, amount int, winner bool) {
+	gm := model.Gamble{
+		UserID:    user.UserID,
+		GuildID:   user.GuildID,
+		Amount:    amount,
+		Winner:    winner,
+		CreatedAt: time.Now(),
+	}
+
+	if err := db.InsertGamble(helper.CreateContextWithTimeout(), gm); err != nil {
+		fmt.Printf("Errored %v\n", err)
+	}
 }
