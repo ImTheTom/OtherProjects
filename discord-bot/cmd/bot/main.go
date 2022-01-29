@@ -11,6 +11,7 @@ import (
 	"github.com/ImTheTom/OtherProjects/discord-bot/config"
 	"github.com/ImTheTom/OtherProjects/discord-bot/internal/bot"
 	"github.com/ImTheTom/OtherProjects/discord-bot/internal/db"
+	"github.com/ImTheTom/OtherProjects/discord-bot/internal/recurring"
 )
 
 const sleepTime = 5
@@ -28,6 +29,8 @@ func main() {
 		panic(err)
 	}
 
+	go recurring.Init()
+
 	bot.Init()
 
 	fmt.Println("Bot is now running.")
@@ -37,4 +40,6 @@ func main() {
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	<-sc
 	bot.CloseBot()
+	db.CloseDatabase()
+	recurring.Stop()
 }

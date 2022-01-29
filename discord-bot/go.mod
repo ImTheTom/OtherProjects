@@ -5,6 +5,7 @@ go 1.17
 require (
 	github.com/bwmarrin/discordgo v0.23.2
 	github.com/jackc/pgx/v4 v4.14.1
+	github.com/robfig/cron/v3 v3.0.0
 )
 
 require (
