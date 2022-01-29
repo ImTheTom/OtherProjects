@@ -5,6 +5,8 @@ services:
     build:
       context: ../.
       dockerfile: build/Dockerfile.dev
+    environment:
+      - CONFIG_LOCATION=./config/config-dev.json
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ../:/app
@@ -18,7 +20,7 @@ services:
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust
     volumes:
-      - discord-data:/var/lib/postgresql/data/
+      - discord-data-dev:/var/lib/postgresql/data/
       - ../postgres/:/docker-entrypoint-initdb.d/
     restart: unless-stopped
     networks:
@@ -27,7 +29,7 @@ services:
           - db
 
 volumes:
-  discord-data:
+  discord-data-dev:
 
 networks:
   discord:

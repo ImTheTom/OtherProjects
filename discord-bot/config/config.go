@@ -4,23 +4,27 @@ import (
 	"encoding/json"
 	"errors"
 	"io/ioutil"
+	"os"
 )
 
 type Config struct {
 	BotToken           string `json:"botToken"`
 	DatabaseConnection string `json:"databaseConnection"`
 	Prefix             string `json:"prefix"`
-	GuildID            string `json:"guild_id"`
 }
-
-const configFile = "./config/config.json"
 
 var (
 	config       Config
 	errBadConfig = errors.New("Bad config was loaded in")
+	errNoConfig  = errors.New("Can't find config file")
 )
 
 func Init() error {
+	configFile := os.Getenv("CONFIG_LOCATION")
+	if len(configFile) == 0 {
+		return errNoConfig
+	}
+
 	raw, err := ioutil.ReadFile(configFile)
 	if err != nil {
 		return err
@@ -47,10 +51,6 @@ func sanityCheckValues() error {
 	}
 
 	if len(config.Prefix) == 0 {
-		return errBadConfig
-	}
-
-	if len(config.GuildID) == 0 {
 		return errBadConfig
 	}
 

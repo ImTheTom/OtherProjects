@@ -5,6 +5,8 @@ services:
     build:
       context: ../.
       dockerfile: build/Dockerfile
+    environment:
+      - CONFIG_LOCATION=./config/config.json
     volumes:
       - /etc/localtime:/etc/localtime:ro
     restart: unless-stopped
