@@ -8,6 +8,6 @@ WORKDIR /app
 
 RUN go mod download
 
-RUN go get github.com/githubnemo/CompileDaemon
+RUN go build ./cmd/bot/
 
-ENTRYPOINT CompileDaemon -log-prefix=false -build="go build ./cmd/bot/" -command="./bot"
+ENTRYPOINT [ "./bot" ]

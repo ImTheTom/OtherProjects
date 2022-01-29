@@ -49,6 +49,7 @@ func FindTopTenPointsForAGuild(ctx context.Context, guildID string) ([]model.Use
 		)
 		if err != nil {
 			fmt.Printf("error is %v\n", err)
+
 			continue
 		}
 

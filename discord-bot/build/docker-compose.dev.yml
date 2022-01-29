@@ -4,9 +4,10 @@ services:
   bot:
     build:
       context: ../.
-      dockerfile: build/Dockerfile
+      dockerfile: build/Dockerfile.dev
     volumes:
       - /etc/localtime:/etc/localtime:ro
+      - ../:/app
     restart: unless-stopped
     networks:
       discord:
