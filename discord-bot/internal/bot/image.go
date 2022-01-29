@@ -32,6 +32,7 @@ func imageMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	files, err := ioutil.ReadDir(imagePath)
 	if err != nil {
 		fmt.Printf("Failed %v\n", err)
+
 		return
 	}
 
@@ -40,6 +41,7 @@ func imageMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	reader, err := os.Open(fmt.Sprintf("%s/%s", imagePath, files[index].Name()))
 	if err != nil {
 		fmt.Printf("Failed %v\n", err)
+
 		return
 	}
 
