@@ -64,6 +64,8 @@ func StandardChatMessages(s *discordgo.Session, m *discordgo.MessageCreate) {
 }
 
 func birthMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
+	logMessage(m)
+
 	created := time.Date(2017, 5, 18, 12, 0, 0, 0, time.UTC)
 	now := time.Now()
 
@@ -71,12 +73,12 @@ func birthMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	message := fmt.Sprintf("I was created on the 18th of May 2017. This means I'm %d days old!", days)
 
-	if _, err := s.ChannelMessageSend(m.ChannelID, message); err != nil {
-		fmt.Printf("failed to send message %v\n", err)
-	}
+	communicateStandardMessage(s, m, message)
 }
 
 func joinedMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
+	logMessage(m)
+
 	mem, err := s.GuildMember(m.GuildID, m.Author.ID)
 	if err != nil {
 		return
@@ -93,46 +95,44 @@ func joinedMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	message := fmt.Sprintf("You joined on %v. That was %d days ago!", joined.Format(layoutUS), days)
 
-	if _, err := s.ChannelMessageSend(m.ChannelID, message); err != nil {
-		fmt.Printf("failed to send message %v\n", err)
-	}
+	communicateStandardMessage(s, m, message)
 }
 
 func flipMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
+	logMessage(m)
+
 	message := "Heads"
 
 	if value := rand.Intn(randomUpperLimit); value == 0 {
 		message = "Tails"
 	}
 
-	if _, err := s.ChannelMessageSend(m.ChannelID, message); err != nil {
-		fmt.Printf("failed to send message %v\n", err)
-	}
+	communicateStandardMessage(s, m, message)
 }
 
 func helloMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
+	logMessage(m)
+
 	helloString := fmt.Sprintf("Hello %s", m.Author.Mention())
-	if _, err := s.ChannelMessageSend(m.ChannelID, helloString); err != nil {
-		fmt.Printf("failed to send message %v\n", err)
-	}
+	communicateStandardMessage(s, m, helloString)
 }
 
 func louisMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
+	logMessage(m)
+
 	index := rand.Intn(len(louisQuotes) - 1)
-	if _, err := s.ChannelMessageSend(m.ChannelID, louisQuotes[index]); err != nil {
-		fmt.Printf("failed to send message %v\n", err)
-	}
+	communicateStandardMessage(s, m, louisQuotes[index])
 }
 
 func pongMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
-	if _, err := s.ChannelMessageSend(m.ChannelID, "Pong!"); err != nil {
-		fmt.Printf("failed to send message %v\n", err)
-	}
+	logMessage(m)
+
+	communicateStandardMessage(s, m, "Pong!")
 }
 
 func rapMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
+	logMessage(m)
+
 	rapString := "Got rocks on my wrist, that shit you can't resist."
-	if _, err := s.ChannelMessageSend(m.ChannelID, rapString); err != nil {
-		fmt.Printf("failed to send message %v\n", err)
-	}
+	communicateStandardMessage(s, m, rapString)
 }

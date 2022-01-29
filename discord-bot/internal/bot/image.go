@@ -8,6 +8,7 @@ import (
 
 	"github.com/ImTheTom/OtherProjects/discord-bot/config"
 	"github.com/bwmarrin/discordgo"
+	"github.com/sirupsen/logrus"
 )
 
 const (
@@ -29,9 +30,11 @@ func ImageUploadMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 }
 
 func imageMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
+	logMessage(m)
+
 	files, err := ioutil.ReadDir(imagePath)
 	if err != nil {
-		fmt.Printf("Failed %v\n", err)
+		logrus.Errorf("Read Dir Failed %v", err)
 
 		return
 	}
@@ -40,12 +43,19 @@ func imageMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	reader, err := os.Open(fmt.Sprintf("%s/%s", imagePath, files[index].Name()))
 	if err != nil {
-		fmt.Printf("Failed %v\n", err)
+		logrus.Errorf("OS Open Failed %v", err)
 
 		return
 	}
 
 	if _, err := s.ChannelFileSend(m.ChannelID, files[index].Name(), reader); err != nil {
-		fmt.Printf("failed to send message %v\n", err)
+		logrus.Errorf("failed to send file %v", err)
+
+		return
 	}
+
+	logrus.WithFields(logrus.Fields{
+		"id":      m.ID,
+		"content": files[index].Name(),
+	}).Info("Command was handled")
 }

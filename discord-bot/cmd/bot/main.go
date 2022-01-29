@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"math/rand"
 	"os"
 	"os/signal"
@@ -12,6 +11,7 @@ import (
 	"github.com/ImTheTom/OtherProjects/discord-bot/internal/bot"
 	"github.com/ImTheTom/OtherProjects/discord-bot/internal/db"
 	"github.com/ImTheTom/OtherProjects/discord-bot/internal/recurring"
+	"github.com/sirupsen/logrus"
 )
 
 const sleepTime = 5
@@ -20,7 +20,7 @@ func main() {
 	rand.Seed(time.Now().UTC().UnixNano())
 
 	if err := config.Init(); err != nil {
-		panic(err)
+		logrus.Fatalf("Config failed to init, restarting... %v", err)
 	}
 
 	config.InitLogger()
@@ -28,19 +28,18 @@ func main() {
 	time.Sleep(sleepTime * time.Second)
 
 	if err := db.Connect(config.GetConfig().DatabaseConnection); err != nil {
-		panic(err)
+		logrus.Fatalf("Failed to connect to the db, restarting... %v", err)
 	}
 
 	go recurring.Init()
 
-	bot.Init()
-
-	fmt.Println("Bot is now running.")
+	go bot.Init()
 
 	sc := make(chan os.Signal, 1)
 
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	<-sc
+	logrus.Info("Exit signal reached. Shutting down the bot.")
 	bot.CloseBot()
 	db.CloseDatabase()
 	recurring.Stop()

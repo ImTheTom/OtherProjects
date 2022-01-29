@@ -13,6 +13,7 @@ import (
 	"github.com/ImTheTom/OtherProjects/discord-bot/internal/helper"
 	"github.com/ImTheTom/OtherProjects/discord-bot/model"
 	"github.com/bwmarrin/discordgo"
+	"github.com/sirupsen/logrus"
 )
 
 const (
@@ -67,22 +68,24 @@ func GambleInteractions(s *discordgo.Session, m *discordgo.MessageCreate) {
 }
 
 func pointsMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
+	logMessage(m)
+
 	user, err := db.FindByUserIDAndGuildID(helper.CreateContextWithTimeout(), m.Author.ID, m.GuildID)
 	if err != nil {
-		fmt.Printf("%v\n", err)
+		logrus.Warnf("Failed to find user of %s %s db error - %v", m.Author.ID, m.GuildID, err)
 	}
 
 	mess := fmt.Sprintf("You have a total of %d points %s", user.Points, m.Author.Mention())
 
-	if _, err := s.ChannelMessageSend(m.ChannelID, mess); err != nil {
-		fmt.Printf("failed to send message %v\n", err)
-	}
+	communicateStandardMessage(s, m, mess)
 }
 
 func leaderBoardMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
+	logMessage(m)
+
 	users, err := db.FindTopTenPointsForAGuild(helper.CreateContextWithTimeout(), m.GuildID)
 	if err != nil {
-		fmt.Printf("%v\n", err)
+		logrus.Warnf("DB error - %v", err)
 	}
 
 	totalMessage := "Current ladder is.\n"
@@ -90,12 +93,12 @@ func leaderBoardMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 		totalMessage += fmt.Sprintf("%d - %s - %d\n", i+1, v.Username, v.Points)
 	}
 
-	if _, err := s.ChannelMessageSend(m.ChannelID, totalMessage); err != nil {
-		fmt.Printf("failed to send message %v\n", err)
-	}
+	communicateStandardMessage(s, m, totalMessage)
 }
 
 func gamblePoints(s *discordgo.Session, m *discordgo.MessageCreate, amountParam string) {
+	logMessage(m)
+
 	user, err := checkGambleIsSane(m)
 	if err != nil {
 		communicateStandardMessage(s, m, err.Error())
@@ -134,12 +137,6 @@ func gamblePoints(s *discordgo.Session, m *discordgo.MessageCreate, amountParam 
 	} else {
 		loserMessage := fmt.Sprintf("You lost %s. Total points is now %d.", user.Username, user.Points)
 		communicateStandardMessage(s, m, loserMessage)
-	}
-}
-
-func communicateStandardMessage(s *discordgo.Session, m *discordgo.MessageCreate, message string) {
-	if _, err := s.ChannelMessageSend(m.ChannelID, message); err != nil {
-		fmt.Printf("failed to send message %v\n", err)
 	}
 }
 
@@ -219,6 +216,6 @@ func SaveGamble(user model.User, amount int, winner bool) {
 	}
 
 	if err := db.InsertGamble(helper.CreateContextWithTimeout(), gm); err != nil {
-		fmt.Printf("Errored %v\n", err)
+		logrus.Errorf("Insert gamble failed %v", err)
 	}
 }

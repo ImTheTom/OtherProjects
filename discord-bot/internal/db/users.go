@@ -2,9 +2,9 @@ package db
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/ImTheTom/OtherProjects/discord-bot/model"
+	"github.com/sirupsen/logrus"
 )
 
 func FindByUserIDAndGuildID(ctx context.Context, userID, guildID string) (model.User, error) {
@@ -48,7 +48,7 @@ func FindTopTenPointsForAGuild(ctx context.Context, guildID string) ([]model.Use
 			&usr.Points,
 		)
 		if err != nil {
-			fmt.Printf("error is %v\n", err)
+			logrus.Errorf("Scan failed %v", err)
 
 			continue
 		}

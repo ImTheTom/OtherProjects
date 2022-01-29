@@ -1,13 +1,12 @@
 package recurring
 
 import (
-	"fmt"
-
 	"github.com/ImTheTom/OtherProjects/discord-bot/internal/bot"
 	"github.com/ImTheTom/OtherProjects/discord-bot/internal/db"
 	"github.com/ImTheTom/OtherProjects/discord-bot/internal/helper"
 	"github.com/ImTheTom/OtherProjects/discord-bot/model"
 	"github.com/bwmarrin/discordgo"
+	"github.com/sirupsen/logrus"
 )
 
 const (
@@ -16,7 +15,7 @@ const (
 )
 
 func syncUsers() {
-	fmt.Println("Syncing users now")
+	logrus.Info("Syncing users now")
 
 	session := bot.GetSession()
 	if session == nil {
@@ -33,7 +32,7 @@ func syncUsers() {
 	for _, v := range guilds {
 		members, err := session.GuildMembers(v.ID, start, limit)
 		if err != nil {
-			fmt.Printf("error is %v\n", err)
+			logrus.Errorf("Errored getting guild members %v", err)
 
 			continue
 		}
@@ -48,14 +47,14 @@ func syncUsers() {
 
 			err = db.UpsertUser(helper.CreateContextWithTimeout(), user)
 			if err != nil {
-				fmt.Printf("Error is %v\n", err)
+				logrus.Errorf("DB Upsert failed %v", err)
 			}
 		}
 	}
 }
 
 func increasePoints() {
-	fmt.Println("Increasing user points now")
+	logrus.Info("Increasing user points now")
 
 	session := bot.GetSession()
 	if session == nil {
@@ -81,7 +80,7 @@ func increasePoints() {
 
 				err := db.IncreasePoints(helper.CreateContextWithTimeout(), user)
 				if err != nil {
-					fmt.Printf("Error is %v\n", err)
+					logrus.Errorf("DB increase failed %v", err)
 				}
 			}
 		}

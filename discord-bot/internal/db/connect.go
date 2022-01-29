@@ -3,10 +3,10 @@ package db
 import (
 	"context"
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/jackc/pgx/v4/pgxpool"
+	"github.com/sirupsen/logrus"
 )
 
 const (
@@ -30,7 +30,7 @@ func Connect(url string) error {
 	for i := 0; i < retries; i++ {
 		pool, err = pgxpool.Connect(context.Background(), dbURL)
 		if err != nil {
-			fmt.Printf("errored %v\n", err)
+			logrus.Errorf("Db connect errored %v", err)
 			time.Sleep(sleepTime * time.Second)
 
 			continue
@@ -43,7 +43,7 @@ func Connect(url string) error {
 		return errFailedToConnect
 	}
 
-	fmt.Println("Successfully connected to the database")
+	logrus.Info("Successfully connected to the database")
 
 	db = pool
 
@@ -53,7 +53,7 @@ func Connect(url string) error {
 func GetDatabase() *pgxpool.Pool {
 	if db == nil {
 		if err := Connect(dbURL); err != nil {
-			fmt.Printf("errored %v\n", err)
+			logrus.Errorf("Db connect errored %v", err)
 		}
 	}
 
