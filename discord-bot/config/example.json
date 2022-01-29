@@ -1,0 +1,5 @@
+{
+	"botToken": "FAKE_DISCORD_TOKEN",
+	"databaseConnection": "postgres://postgres@discord-bot_db_1:5432/discord",
+	"prefix": "!"
+}
