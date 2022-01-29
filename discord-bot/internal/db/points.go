@@ -21,3 +21,20 @@ func IncreasePoints(ctx context.Context, user model.User) error {
 
 	return err
 }
+
+func SetUserPoints(ctx context.Context, user model.User) error {
+	currentDB := GetDatabase()
+	if currentDB == nil {
+		return errNoDb
+	}
+
+	_, err := currentDB.Exec(
+		ctx,
+		"UPDATE users SET points = $1 WHERE user_id = $2 AND guild_id = $3",
+		user.Points,
+		user.UserID,
+		user.GuildID,
+	)
+
+	return err
+}

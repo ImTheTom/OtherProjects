@@ -24,3 +24,37 @@ func FindByUserIDAndGuildID(ctx context.Context, userID, guildID string) (model.
 
 	return user, err
 }
+
+func FindTopTenPointsForAGuild(ctx context.Context, guildID string) ([]model.User, error) {
+	users := make([]model.User, 0)
+	db := GetDatabase()
+
+	rows, err := db.Query(
+		ctx,
+		`SELECT * FROM users where guild_id = $1
+		ORDER BY points DESC LIMIT 10`,
+		guildID,
+	)
+	if err != nil {
+		return users, err
+	}
+
+	for rows.Next() {
+		var usr model.User
+
+		err := rows.Scan(
+			&usr.UserID,
+			&usr.GuildID,
+			&usr.Username,
+			&usr.Nickname,
+			&usr.Points,
+		)
+		if err != nil {
+			continue
+		}
+
+		users = append(users, usr)
+	}
+
+	return users, err
+}
