@@ -191,6 +191,10 @@ func calulatePointsLessThanAll(user model.User, amountParam string, winner bool)
 		return currentPoints, errInvalidGambleAmount
 	}
 
+	if gambleAmount <= 0 {
+		return currentPoints, errInvalidGambleAmount
+	}
+
 	if winner {
 		currentPoints = user.Points + gambleAmount
 	} else {

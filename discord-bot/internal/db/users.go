@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/ImTheTom/OtherProjects/discord-bot/model"
 )
@@ -47,6 +48,7 @@ func FindTopTenPointsForAGuild(ctx context.Context, guildID string) ([]model.Use
 			&usr.Points,
 		)
 		if err != nil {
+			fmt.Printf("error is %v\n", err)
 			continue
 		}
 
