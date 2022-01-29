@@ -23,6 +23,8 @@ func main() {
 		panic(err)
 	}
 
+	config.InitLogger()
+
 	time.Sleep(sleepTime * time.Second)
 
 	if err := db.Connect(config.GetConfig().DatabaseConnection); err != nil {
