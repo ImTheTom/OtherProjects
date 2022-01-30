@@ -3,6 +3,7 @@ package config
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"os"
 )
@@ -13,14 +14,24 @@ type Config struct {
 	Prefix             string `json:"prefix"`
 }
 
+const EnvConfigName = "CONFIG_LOCATION"
+
 var (
 	config       Config
 	errBadConfig = errors.New("Bad config was loaded in")
 	errNoConfig  = errors.New("Can't find config file")
 )
 
+func GetConfig() Config {
+	return config
+}
+
+func SetConfig(cfg Config) {
+	config = cfg
+}
+
 func Init() error {
-	configFile := os.Getenv("CONFIG_LOCATION")
+	configFile := os.Getenv(EnvConfigName)
 	if len(configFile) == 0 {
 		return errNoConfig
 	}
@@ -34,11 +45,9 @@ func Init() error {
 		return err
 	}
 
-	return sanityCheckValues()
-}
+	fmt.Printf("%v\n", config)
 
-func GetConfig() Config {
-	return config
+	return sanityCheckValues()
 }
 
 func sanityCheckValues() error {
