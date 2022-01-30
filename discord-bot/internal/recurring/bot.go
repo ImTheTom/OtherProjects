@@ -14,7 +14,7 @@ const (
 	limit = 1000
 )
 
-func syncUsers() {
+func SyncUsers() {
 	logrus.Info("Syncing users now")
 
 	session := bot.GetSession()
@@ -53,7 +53,7 @@ func syncUsers() {
 	}
 }
 
-func increasePoints() {
+func IncreasePoints() {
 	logrus.Info("Increasing user points now")
 
 	session := bot.GetSession()
