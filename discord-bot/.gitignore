@@ -4,3 +4,5 @@ config/config-dev.json
 /bot
 
 assets/images/
+
+tmp.txt

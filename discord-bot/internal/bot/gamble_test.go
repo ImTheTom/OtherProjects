@@ -17,10 +17,9 @@ func TestSaveGamble(t *testing.T) {
 	}
 
 	tests := []struct {
-		name                 string
-		args                 args
-		dbInteractionReturns error
-		exceptError          bool
+		name        string
+		args        args
+		exceptError bool
 	}{
 		{
 			name: "No db error goes straight through",
@@ -29,15 +28,27 @@ func TestSaveGamble(t *testing.T) {
 				amount: 5,
 				winner: true,
 			},
-			dbInteractionReturns: nil,
-			exceptError:          false,
+			exceptError: false,
+		},
+		{
+			name: "db error gets caught though",
+			args: args{
+				user:   model.User{},
+				amount: 1,
+				winner: true,
+			},
+			exceptError: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			bot.DBInt = db.MockDiscordDBInterface{}
 			result := bot.SaveGamble(tt.args.user, tt.args.amount, tt.args.winner)
-			assert.Nil(t, result)
+			if tt.args.amount == 1 {
+				assert.NotNil(t, result)
+			} else {
+				assert.Nil(t, result)
+			}
 		})
 	}
 }
