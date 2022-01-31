@@ -9,13 +9,12 @@ import (
 
 var errNoDb = errors.New("No database")
 
-func UpsertUser(ctx context.Context, user model.User) error {
-	currentDB := GetDatabase()
-	if currentDB == nil {
+func (disDB discordDB) UpsertUser(ctx context.Context, user model.User) error {
+	if disDB.db == nil {
 		return errNoDb
 	}
 
-	_, err := currentDB.Exec(
+	_, err := disDB.db.Exec(
 		ctx,
 		"INSERT INTO users(user_id,guild_id,username,nickname) VALUES ($1,$2,$3,$4) "+
 			"ON CONFLICT (user_id, guild_id) DO UPDATE SET username=$3, nickname=$4",

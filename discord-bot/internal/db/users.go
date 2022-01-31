@@ -7,9 +7,9 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func FindByUserIDAndGuildID(ctx context.Context, userID, guildID string) (model.User, error) {
+func (disDB discordDB) FindByUserIDAndGuildID(ctx context.Context, userID, guildID string) (model.User, error) {
 	user := model.User{}
-	db := GetDatabase()
+	db := disDB.db
 
 	err := db.QueryRow(
 		ctx,
@@ -23,9 +23,9 @@ func FindByUserIDAndGuildID(ctx context.Context, userID, guildID string) (model.
 	return user, err
 }
 
-func FindTopTenPointsForAGuild(ctx context.Context, guildID string) ([]model.User, error) {
+func (disDB discordDB) FindTopTenPointsForAGuild(ctx context.Context, guildID string) ([]model.User, error) {
 	users := make([]model.User, 0)
-	db := GetDatabase()
+	db := disDB.db
 
 	rows, err := db.Query(
 		ctx,

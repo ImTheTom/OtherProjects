@@ -2,14 +2,20 @@ package bot
 
 import (
 	"github.com/ImTheTom/OtherProjects/discord-bot/config"
+	"github.com/ImTheTom/OtherProjects/discord-bot/internal/db"
 	"github.com/bwmarrin/discordgo"
 	"github.com/sirupsen/logrus"
 )
 
-var sess *discordgo.Session
+var (
+	sess  *discordgo.Session
+	DBInt db.DiscordDBInterface
+)
 
 func Init() {
 	logrus.Info("Initialising bot and commands")
+
+	DBInt = db.GetDatabaseInterface()
 
 	botToken := config.GetConfig().BotToken
 

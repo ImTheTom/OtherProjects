@@ -6,8 +6,8 @@ import (
 	"github.com/ImTheTom/OtherProjects/discord-bot/model"
 )
 
-func IncreasePoints(ctx context.Context, user model.User) error {
-	currentDB := GetDatabase()
+func (disDB discordDB) IncreasePoints(ctx context.Context, user model.User) error {
+	currentDB := disDB.db
 	if currentDB == nil {
 		return errNoDb
 	}
@@ -22,8 +22,8 @@ func IncreasePoints(ctx context.Context, user model.User) error {
 	return err
 }
 
-func SetUserPoints(ctx context.Context, user model.User) error {
-	currentDB := GetDatabase()
+func (disDB discordDB) SetUserPoints(ctx context.Context, user model.User) error {
+	currentDB := disDB.db
 	if currentDB == nil {
 		return errNoDb
 	}

@@ -3,7 +3,6 @@ package config
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"os"
 )
@@ -44,8 +43,6 @@ func Init() error {
 	if err = json.Unmarshal(raw, &config); err != nil {
 		return err
 	}
-
-	fmt.Printf("%v\n", config)
 
 	return sanityCheckValues()
 }

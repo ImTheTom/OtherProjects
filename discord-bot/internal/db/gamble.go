@@ -8,13 +8,12 @@ import (
 	"github.com/jackc/pgx"
 )
 
-func InsertGamble(ctx context.Context, gamble model.Gamble) error {
-	currentDB := GetDatabase()
-	if currentDB == nil {
+func (disDB discordDB) InsertGamble(ctx context.Context, gamble model.Gamble) error {
+	if disDB.db == nil {
 		return errNoDb
 	}
 
-	_, err := currentDB.Exec(
+	_, err := disDB.db.Exec(
 		ctx,
 		"INSERT INTO gambles(user_id,guild_id,amount,winner,created_at) VALUES ($1,$2,$3,$4,$5)",
 		gamble.UserID,
@@ -27,11 +26,10 @@ func InsertGamble(ctx context.Context, gamble model.Gamble) error {
 	return err
 }
 
-func FindLatestGambleForUser(ctx context.Context, user model.User) (model.Gamble, error) {
+func (disDB discordDB) FindLatestGambleForUser(ctx context.Context, user model.User) (model.Gamble, error) {
 	gamble := model.Gamble{}
-	db := GetDatabase()
 
-	err := db.QueryRow(
+	err := disDB.db.QueryRow(
 		ctx,
 		"SELECT id, user_id,guild_id,amount,winner,created_at FROM gambles "+
 			"WHERE user_id = $1 AND guild_id = $2 ORDER BY id DESC LIMIT 1",

@@ -45,7 +45,7 @@ func SyncUsers() {
 				Nickname: mem.Nick,
 			}
 
-			err = db.UpsertUser(helper.CreateContextWithTimeout(), user)
+			err = db.GetDatabaseInterface().UpsertUser(helper.CreateContextWithTimeout(), user)
 			if err != nil {
 				logrus.Errorf("DB Upsert failed %v", err)
 			}
@@ -78,7 +78,7 @@ func IncreasePoints() {
 					GuildID: v.ID,
 				}
 
-				err := db.IncreasePoints(helper.CreateContextWithTimeout(), user)
+				err := db.GetDatabaseInterface().IncreasePoints(helper.CreateContextWithTimeout(), user)
 				if err != nil {
 					logrus.Errorf("DB increase failed %v", err)
 				}
