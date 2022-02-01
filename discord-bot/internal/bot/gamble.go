@@ -101,7 +101,7 @@ func leaderBoardMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 func gamblePoints(s *discordgo.Session, m *discordgo.MessageCreate, amountParam string) {
 	logMessage(m)
 
-	user, err := checkGambleIsSane(m)
+	user, err := CheckGambleIsSane(m)
 	if err != nil {
 		communicateStandardMessage(s, m, err.Error())
 
@@ -117,9 +117,9 @@ func gamblePoints(s *discordgo.Session, m *discordgo.MessageCreate, amountParam 
 	}
 
 	if amountParam == allPointsGamble {
-		currentPoints = calulatePointsAll(user, winner)
+		currentPoints = CalulatePointsAll(user, winner)
 	} else {
-		currentPoints, err = calulatePointsLessThanAll(user, amountParam, winner)
+		currentPoints, err = CalulatePointsLessThanAll(user, amountParam, winner)
 		if err != nil {
 			communicateStandardMessage(s, m, "Invalid gamble amount")
 
@@ -142,7 +142,7 @@ func gamblePoints(s *discordgo.Session, m *discordgo.MessageCreate, amountParam 
 	}
 }
 
-func checkGambleIsSane(m *discordgo.MessageCreate) (model.User, error) {
+func CheckGambleIsSane(m *discordgo.MessageCreate) (model.User, error) {
 	user, err := db.GetDatabaseInterface().FindByUserIDAndGuildID(
 		helper.CreateContextWithTimeout(), m.Author.ID, m.GuildID,
 	)
@@ -173,7 +173,7 @@ func checkGambleIsSane(m *discordgo.MessageCreate) (model.User, error) {
 	return user, nil
 }
 
-func calulatePointsAll(user model.User, winner bool) int {
+func CalulatePointsAll(user model.User, winner bool) int {
 	_ = SaveGamble(user, user.Points, winner)
 
 	if winner {
@@ -183,7 +183,7 @@ func calulatePointsAll(user model.User, winner bool) int {
 	return 0
 }
 
-func calulatePointsLessThanAll(user model.User, amountParam string, winner bool) (int, error) {
+func CalulatePointsLessThanAll(user model.User, amountParam string, winner bool) (int, error) {
 	currentPoints := 0
 
 	gambleAmount, err := strconv.Atoi(amountParam)
