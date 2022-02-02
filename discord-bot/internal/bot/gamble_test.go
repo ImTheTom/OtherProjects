@@ -7,8 +7,22 @@ import (
 	"github.com/ImTheTom/OtherProjects/discord-bot/internal/bot"
 	"github.com/ImTheTom/OtherProjects/discord-bot/internal/db"
 	"github.com/ImTheTom/OtherProjects/discord-bot/model"
+	"github.com/bwmarrin/discordgo"
 	"github.com/stretchr/testify/assert"
 )
+
+var mes = &discordgo.MessageCreate{
+	Message: &discordgo.Message{
+		ID:        "messageid",
+		Content:   "!ping",
+		GuildID:   "1",
+		ChannelID: "channelid",
+		Author: &discordgo.User{
+			Username: "userid",
+			ID:       "5",
+		},
+	},
+}
 
 func TestMain(m *testing.M) {
 	bot.DBInt = db.MockDiscordDBInterface{}
@@ -59,7 +73,7 @@ func TestSaveGamble(t *testing.T) {
 	}
 }
 
-func TestCalulatePointsLessThanAll(t *testing.T) {
+func TestCalulatePointsLessThanAll(t *testing.T) { //nolint
 	type args struct {
 		user        model.User
 		amountParam string
@@ -196,6 +210,37 @@ func TestCalulatePointsAll(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got := bot.CalulatePointsAll(tt.args.user, tt.args.winner)
 			assert.Equal(t, tt.want, got)
+		})
+	}
+}
+
+func TestCheckGambleIsSane(t *testing.T) {
+	type args struct {
+		m *discordgo.MessageCreate
+	}
+
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Standard ok",
+			args: args{
+				m: mes,
+			},
+			wantErr: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, err := bot.CheckGambleIsSane(tt.args.m)
+			if tt.wantErr {
+				assert.NotNil(t, err)
+			} else {
+				assert.Nil(t, err)
+			}
 		})
 	}
 }

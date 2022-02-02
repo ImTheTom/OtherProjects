@@ -46,11 +46,11 @@ func GambleInteractions(s *discordgo.Session, m *discordgo.MessageCreate) {
 	case fmt.Sprintf("%s%s", prefix, points):
 		called = true
 
-		pointsMessage(s, m)
+		PointsMessage(s, m)
 	case fmt.Sprintf("%s%s", prefix, leaderBoard):
 		called = true
 
-		leaderBoardMessage(s, m)
+		LeaderBoardMessage(s, m)
 	}
 
 	if called {
@@ -63,11 +63,11 @@ func GambleInteractions(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	if contentSplit[0] == fmt.Sprintf("%s%s", prefix, gamble) {
-		gamblePoints(s, m, contentSplit[1])
+		GamblePoints(s, m, contentSplit[1])
 	}
 }
 
-func pointsMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
+func PointsMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	logMessage(m)
 
 	user, err := db.GetDatabaseInterface().FindByUserIDAndGuildID(
@@ -82,7 +82,7 @@ func pointsMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	communicateStandardMessage(s, m, mess)
 }
 
-func leaderBoardMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
+func LeaderBoardMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	logMessage(m)
 
 	users, err := db.GetDatabaseInterface().FindTopTenPointsForAGuild(helper.CreateContextWithTimeout(), m.GuildID)
@@ -98,7 +98,7 @@ func leaderBoardMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	communicateStandardMessage(s, m, totalMessage)
 }
 
-func gamblePoints(s *discordgo.Session, m *discordgo.MessageCreate, amountParam string) {
+func GamblePoints(s *discordgo.Session, m *discordgo.MessageCreate, amountParam string) {
 	logMessage(m)
 
 	user, err := CheckGambleIsSane(m)
@@ -129,7 +129,7 @@ func gamblePoints(s *discordgo.Session, m *discordgo.MessageCreate, amountParam 
 
 	user.Points = currentPoints
 
-	if err = db.GetDatabaseInterface().SetUserPoints(helper.CreateContextWithTimeout(), user); err != nil {
+	if err = DBInt.SetUserPoints(helper.CreateContextWithTimeout(), user); err != nil {
 		return
 	}
 
@@ -143,14 +143,14 @@ func gamblePoints(s *discordgo.Session, m *discordgo.MessageCreate, amountParam 
 }
 
 func CheckGambleIsSane(m *discordgo.MessageCreate) (model.User, error) {
-	user, err := db.GetDatabaseInterface().FindByUserIDAndGuildID(
+	user, err := DBInt.FindByUserIDAndGuildID(
 		helper.CreateContextWithTimeout(), m.Author.ID, m.GuildID,
 	)
 	if err != nil {
 		return user, err
 	}
 
-	gamble, err := db.GetDatabaseInterface().FindLatestGambleForUser(helper.CreateContextWithTimeout(), user)
+	gamble, err := DBInt.FindLatestGambleForUser(helper.CreateContextWithTimeout(), user)
 	if err != nil {
 		if err.Error() != "no rows in result set" {
 			return user, err

@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	sess  *discordgo.Session
+	Sess  *discordgo.Session
 	DBInt db.DiscordDBInterface
 )
 
@@ -40,22 +40,22 @@ func Init() {
 
 	logrus.Info("Bot is now running...")
 
-	sess = session
+	Sess = session
 }
 
 func GetSession() *discordgo.Session {
-	if sess != nil {
-		return sess
+	if Sess != nil {
+		return Sess
 	}
 
 	Init()
 
-	return sess
+	return Sess
 }
 
 func CloseBot() {
-	if sess != nil {
-		sess.Close()
+	if Sess != nil {
+		Sess.Close()
 	}
 }
 

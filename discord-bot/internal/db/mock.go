@@ -8,9 +8,28 @@ import (
 	"github.com/ImTheTom/OtherProjects/discord-bot/model"
 )
 
-var errStand = errors.New("Standard DB fail")
-
 type MockDiscordDBInterface struct{}
+
+var (
+	errStand = errors.New("Standard DB fail")
+
+	standUser = model.User{
+		UserID:   "1",
+		GuildID:  "1",
+		Username: "Test",
+		Nickname: "",
+		Points:   1,
+	}
+
+	standGamble = model.Gamble{
+		ID:        1,
+		UserID:    "1",
+		GuildID:   "1",
+		Amount:    1,
+		Winner:    true,
+		CreatedAt: time.Now().AddDate(0, 0, -1),
+	}
+)
 
 func (m MockDiscordDBInterface) UpsertUser(ctx context.Context, user model.User) error {
 	if user.UserID == "0" {
@@ -34,24 +53,13 @@ func (m MockDiscordDBInterface) FindLatestGambleForUser(ctx context.Context, use
 	}
 
 	if user.UserID == "1" {
-		return model.Gamble{
-			ID:        1,
-			UserID:    "1",
-			GuildID:   "1",
-			Amount:    1,
-			Winner:    true,
-			CreatedAt: time.Now(),
-		}, nil
+		result := standGamble
+		result.CreatedAt = time.Now()
+
+		return result, nil
 	}
 
-	return model.Gamble{
-		ID:        1,
-		UserID:    "1",
-		GuildID:   "1",
-		Amount:    1,
-		Winner:    true,
-		CreatedAt: time.Now().AddDate(0, 0, -1),
-	}, nil
+	return standGamble, nil
 }
 
 func (m MockDiscordDBInterface) IncreasePoints(ctx context.Context, user model.User) error {
@@ -77,7 +85,11 @@ func (m MockDiscordDBInterface) FindByUserIDAndGuildID(
 		return model.User{}, errStand
 	}
 
-	return model.User{}, nil
+	result := standUser
+	result.UserID = userID
+	result.GuildID = guildID
+
+	return result, nil
 }
 
 func (m MockDiscordDBInterface) FindTopTenPointsForAGuild(ctx context.Context, guildID string) ([]model.User, error) {
@@ -85,5 +97,7 @@ func (m MockDiscordDBInterface) FindTopTenPointsForAGuild(ctx context.Context, g
 		return []model.User{}, errStand
 	}
 
-	return []model.User{}, nil
+	return []model.User{
+		standUser,
+	}, nil
 }

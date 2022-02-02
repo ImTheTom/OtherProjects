@@ -14,20 +14,24 @@ const (
 	limit = 1000
 )
 
-func SyncUsers() {
+var DBInt db.DiscordDBInterface
+
+func SyncUsers() bool {
 	logrus.Info("Syncing users now")
 
 	session := bot.GetSession()
 	if session == nil {
-		return
+		return false
 	}
 
 	state := session.State
 	if state == nil {
-		return
+		return false
 	}
 
 	guilds := state.Guilds
+
+	errored := false
 
 	for _, v := range guilds {
 		members, err := session.GuildMembers(v.ID, start, limit)
@@ -45,28 +49,34 @@ func SyncUsers() {
 				Nickname: mem.Nick,
 			}
 
-			err = db.GetDatabaseInterface().UpsertUser(helper.CreateContextWithTimeout(), user)
+			err = DBInt.UpsertUser(helper.CreateContextWithTimeout(), user)
 			if err != nil {
 				logrus.Errorf("DB Upsert failed %v", err)
+
+				errored = true
 			}
 		}
 	}
+
+	return !errored
 }
 
-func IncreasePoints() {
+func IncreasePoints() bool {
 	logrus.Info("Increasing user points now")
 
 	session := bot.GetSession()
 	if session == nil {
-		return
+		return false
 	}
 
 	state := session.State
 	if state == nil {
-		return
+		return false
 	}
 
 	guilds := state.Guilds
+
+	errored := false
 
 	for _, v := range guilds {
 		guildPresences := v.Presences
@@ -78,11 +88,15 @@ func IncreasePoints() {
 					GuildID: v.ID,
 				}
 
-				err := db.GetDatabaseInterface().IncreasePoints(helper.CreateContextWithTimeout(), user)
+				err := DBInt.IncreasePoints(helper.CreateContextWithTimeout(), user)
 				if err != nil {
 					logrus.Errorf("DB increase failed %v", err)
+
+					errored = true
 				}
 			}
 		}
 	}
+
+	return !errored
 }

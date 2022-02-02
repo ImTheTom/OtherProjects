@@ -1,6 +1,7 @@
 package recurring
 
 import (
+	"github.com/ImTheTom/OtherProjects/discord-bot/internal/db"
 	"github.com/robfig/cron/v3"
 	"github.com/sirupsen/logrus"
 )
@@ -16,6 +17,8 @@ func Init() {
 	if _, err := c.AddFunc("@every 1m", func() { IncreasePoints() }); err != nil {
 		logrus.Fatalf("Failed to add cron function, restarting... %v", err)
 	}
+
+	DBInt = db.GetDatabaseInterface()
 
 	c.Start()
 
