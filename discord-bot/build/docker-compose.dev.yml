@@ -7,32 +7,5 @@ services:
       dockerfile: build/Dockerfile.dev
     environment:
       - CONFIG_LOCATION=./config/config-dev.json
-      - TZ=Australia/Brisbane
     volumes:
-      - /etc/localtime:/etc/localtime:ro
       - ../:/app
-    restart: unless-stopped
-    networks:
-      discord:
-        aliases:
-          - bot
-  db:
-    image: postgres:13.2-alpine
-    environment:
-      POSTGRES_HOST_AUTH_METHOD: trust
-    volumes:
-      - discord-data-dev:/var/lib/postgresql/data/
-      - ../postgres/:/docker-entrypoint-initdb.d/
-    restart: unless-stopped
-    networks:
-      discord:
-        aliases:
-          - db
-
-volumes:
-  discord-data-dev:
-
-networks:
-  discord:
-    external:
-      name: discord
