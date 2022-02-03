@@ -42,6 +42,11 @@ func SyncUsers() bool {
 		}
 
 		for _, mem := range members {
+			// I don't care about the bot itself
+			if mem.User.ID == state.User.ID {
+				continue
+			}
+
 			user := model.User{
 				UserID:   mem.User.ID,
 				GuildID:  v.ID,
@@ -83,6 +88,11 @@ func IncreasePoints() bool {
 
 		for _, pres := range guildPresences {
 			if pres.Status != discordgo.StatusOffline {
+				// I don't care about the bot itself
+				if pres.User.ID == state.User.ID {
+					continue
+				}
+
 				user := model.User{
 					UserID:  pres.User.ID,
 					GuildID: v.ID,
