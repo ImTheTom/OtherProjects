@@ -23,13 +23,19 @@ func main() {
 		logrus.Fatalf("Config failed to init, restarting... %v", err)
 	}
 
+	logrus.Info("Setup config")
+
 	config.InitLogger()
+
+	logrus.Info("Finished configuration. Sleeping for 5 seconds before connecting to the db and discord...")
 
 	time.Sleep(sleepTime * time.Second)
 
 	if _, err := db.NewDiscordDB(config.GetConfig().DatabaseConnection); err != nil {
 		logrus.Fatalf("Failed to connect to the db, restarting... %v", err)
 	}
+
+	logrus.Info("Running go routines")
 
 	go recurring.Init()
 
