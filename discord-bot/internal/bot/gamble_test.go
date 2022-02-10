@@ -1,6 +1,7 @@
 package bot_test
 
 import (
+	"context"
 	"os"
 	"testing"
 
@@ -11,18 +12,21 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var mes = &discordgo.MessageCreate{
-	Message: &discordgo.Message{
-		ID:        "messageid",
-		Content:   "!ping",
-		GuildID:   "1",
-		ChannelID: "channelid",
-		Author: &discordgo.User{
-			Username: "userid",
-			ID:       "5",
+var (
+	mes = &discordgo.MessageCreate{
+		Message: &discordgo.Message{
+			ID:        "messageid",
+			Content:   "!ping",
+			GuildID:   "1",
+			ChannelID: "channelid",
+			Author: &discordgo.User{
+				Username: "userid",
+				ID:       "5",
+			},
 		},
-	},
-}
+	}
+	ctx = context.Background()
+)
 
 func TestMain(m *testing.M) {
 	bot.DBInt = db.MockDiscordDBInterface{}
@@ -63,7 +67,7 @@ func TestSaveGamble(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := bot.SaveGamble(tt.args.user, tt.args.amount, tt.args.winner)
+			result := bot.SaveGamble(ctx, tt.args.user, tt.args.amount, tt.args.winner)
 			if tt.args.amount == 1 {
 				assert.NotNil(t, result)
 			} else {
@@ -159,7 +163,7 @@ func TestCalulatePointsLessThanAll(t *testing.T) { //nolint
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := bot.CalulatePointsLessThanAll(tt.args.user, tt.args.amountParam, tt.args.winner)
+			got, err := bot.CalulatePointsLessThanAll(ctx, tt.args.user, tt.args.amountParam, tt.args.winner)
 			if tt.ExpectError {
 				assert.NotNil(t, err)
 			} else {
@@ -208,7 +212,7 @@ func TestCalulatePointsAll(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := bot.CalulatePointsAll(tt.args.user, tt.args.winner)
+			got := bot.CalulatePointsAll(ctx, tt.args.user, tt.args.winner)
 			assert.Equal(t, tt.want, got)
 		})
 	}
@@ -235,7 +239,7 @@ func TestCheckGambleIsSane(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := bot.CheckGambleIsSane(tt.args.m)
+			_, err := bot.CheckGambleIsSane(ctx, tt.args.m)
 			if tt.wantErr {
 				assert.NotNil(t, err)
 			} else {

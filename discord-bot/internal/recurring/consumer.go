@@ -1,7 +1,8 @@
 package recurring
 
 import (
-	"github.com/ImTheTom/OtherProjects/discord-bot/internal/helper"
+	"context"
+
 	"github.com/ImTheTom/OtherProjects/discord-bot/model"
 	"github.com/sirupsen/logrus"
 )
@@ -9,12 +10,12 @@ import (
 func ProcessSyncUsers(syncUserCha <-chan model.User) {
 	logrus.Info("Starting sync users channel consumption...")
 
+	ctx := context.Background()
+
 	for {
 		user := <-syncUserCha
 
-		logrus.Infof("syncing user %+v", user)
-
-		if err := DBInt.UpsertUser(helper.CreateContextWithTimeout(), user); err != nil {
+		if err := DBInt.UpsertUser(ctx, user); err != nil {
 			logrus.Errorf("DB Upsert failed %v", err)
 		}
 	}
@@ -23,12 +24,12 @@ func ProcessSyncUsers(syncUserCha <-chan model.User) {
 func ProcessIncreasePoints(increasePointsCha <-chan model.User) {
 	logrus.Info("Starting increase users channel consumption...")
 
+	ctx := context.Background()
+
 	for {
 		user := <-increasePointsCha
 
-		logrus.Infof("Increasing points for user %+v", user)
-
-		if err := DBInt.IncreasePoints(helper.CreateContextWithTimeout(), user); err != nil {
+		if err := DBInt.IncreasePoints(ctx, user); err != nil {
 			logrus.Errorf("DB Upsert failed %v", err)
 		}
 	}

@@ -1,6 +1,7 @@
 package bot
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"math/rand"
@@ -70,8 +71,12 @@ func GambleInteractions(s *discordgo.Session, m *discordgo.MessageCreate) {
 func PointsMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	logMessage(m)
 
+	ctx, cancel := helper.CreateContextWithTimeout()
+
+	defer cancel()
+
 	user, err := db.GetDatabaseInterface().FindByUserIDAndGuildID(
-		helper.CreateContextWithTimeout(), m.Author.ID, m.GuildID,
+		ctx, m.Author.ID, m.GuildID,
 	)
 	if err != nil {
 		logrus.Warnf("Failed to find user of %s %s db error - %v", m.Author.ID, m.GuildID, err)
@@ -85,7 +90,11 @@ func PointsMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 func LeaderBoardMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	logMessage(m)
 
-	users, err := db.GetDatabaseInterface().FindTopTenPointsForAGuild(helper.CreateContextWithTimeout(), m.GuildID)
+	ctx, cancel := helper.CreateContextWithTimeout()
+
+	defer cancel()
+
+	users, err := db.GetDatabaseInterface().FindTopTenPointsForAGuild(ctx, m.GuildID)
 	if err != nil {
 		logrus.Warnf("DB error - %v", err)
 	}
@@ -101,7 +110,11 @@ func LeaderBoardMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 func GamblePoints(s *discordgo.Session, m *discordgo.MessageCreate, amountParam string) {
 	logMessage(m)
 
-	user, err := CheckGambleIsSane(m)
+	ctx, cancel := helper.CreateContextWithTimeout()
+
+	defer cancel()
+
+	user, err := CheckGambleIsSane(ctx, m)
 	if err != nil {
 		communicateStandardMessage(s, m, err.Error())
 
@@ -117,9 +130,9 @@ func GamblePoints(s *discordgo.Session, m *discordgo.MessageCreate, amountParam 
 	}
 
 	if amountParam == allPointsGamble {
-		currentPoints = CalulatePointsAll(user, winner)
+		currentPoints = CalulatePointsAll(ctx, user, winner)
 	} else {
-		currentPoints, err = CalulatePointsLessThanAll(user, amountParam, winner)
+		currentPoints, err = CalulatePointsLessThanAll(ctx, user, amountParam, winner)
 		if err != nil {
 			communicateStandardMessage(s, m, "Invalid gamble amount")
 
@@ -129,7 +142,7 @@ func GamblePoints(s *discordgo.Session, m *discordgo.MessageCreate, amountParam 
 
 	user.Points = currentPoints
 
-	if err = DBInt.SetUserPoints(helper.CreateContextWithTimeout(), user); err != nil {
+	if err = DBInt.SetUserPoints(ctx, user); err != nil {
 		return
 	}
 
@@ -142,15 +155,15 @@ func GamblePoints(s *discordgo.Session, m *discordgo.MessageCreate, amountParam 
 	}
 }
 
-func CheckGambleIsSane(m *discordgo.MessageCreate) (model.User, error) {
+func CheckGambleIsSane(ctx context.Context, m *discordgo.MessageCreate) (model.User, error) {
 	user, err := DBInt.FindByUserIDAndGuildID(
-		helper.CreateContextWithTimeout(), m.Author.ID, m.GuildID,
+		ctx, m.Author.ID, m.GuildID,
 	)
 	if err != nil {
 		return user, err
 	}
 
-	gamble, err := DBInt.FindLatestGambleForUser(helper.CreateContextWithTimeout(), user)
+	gamble, err := DBInt.FindLatestGambleForUser(ctx, user)
 	if err != nil {
 		if err.Error() != "no rows in result set" {
 			return user, err
@@ -173,8 +186,8 @@ func CheckGambleIsSane(m *discordgo.MessageCreate) (model.User, error) {
 	return user, nil
 }
 
-func CalulatePointsAll(user model.User, winner bool) int {
-	_ = SaveGamble(user, user.Points, winner)
+func CalulatePointsAll(ctx context.Context, user model.User, winner bool) int {
+	_ = SaveGamble(ctx, user, user.Points, winner)
 
 	if winner {
 		return user.Points * allPointsGambleWin
@@ -183,7 +196,7 @@ func CalulatePointsAll(user model.User, winner bool) int {
 	return 0
 }
 
-func CalulatePointsLessThanAll(user model.User, amountParam string, winner bool) (int, error) {
+func CalulatePointsLessThanAll(ctx context.Context, user model.User, amountParam string, winner bool) (int, error) {
 	currentPoints := 0
 
 	gambleAmount, err := strconv.Atoi(amountParam)
@@ -205,12 +218,12 @@ func CalulatePointsLessThanAll(user model.User, amountParam string, winner bool)
 		currentPoints = user.Points - gambleAmount
 	}
 
-	_ = SaveGamble(user, gambleAmount, winner)
+	_ = SaveGamble(ctx, user, gambleAmount, winner)
 
 	return currentPoints, nil
 }
 
-func SaveGamble(user model.User, amount int, winner bool) error {
+func SaveGamble(ctx context.Context, user model.User, amount int, winner bool) error {
 	gm := model.Gamble{
 		UserID:    user.UserID,
 		GuildID:   user.GuildID,
@@ -219,7 +232,7 @@ func SaveGamble(user model.User, amount int, winner bool) error {
 		CreatedAt: time.Now(),
 	}
 
-	err := DBInt.InsertGamble(helper.CreateContextWithTimeout(), gm)
+	err := DBInt.InsertGamble(ctx, gm)
 	if err != nil {
 		logrus.Errorf("Insert gamble failed %v", err)
 	}
