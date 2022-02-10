@@ -13,6 +13,8 @@ func (disDB discordDB) InsertGamble(ctx context.Context, gamble model.Gamble) er
 		return errNoDb
 	}
 
+	disDB.mu.Lock()
+
 	_, err := disDB.db.Exec(
 		ctx,
 		"INSERT INTO gambles(user_id,guild_id,amount,winner,created_at) VALUES ($1,$2,$3,$4,$5)",
@@ -22,6 +24,8 @@ func (disDB discordDB) InsertGamble(ctx context.Context, gamble model.Gamble) er
 		gamble.Winner,
 		gamble.CreatedAt,
 	)
+
+	disDB.mu.Unlock()
 
 	return err
 }

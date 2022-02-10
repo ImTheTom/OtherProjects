@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 	"errors"
+	"sync"
 	"time"
 
 	"github.com/ImTheTom/OtherProjects/discord-bot/config"
@@ -34,6 +35,7 @@ type DiscordDBInterface interface {
 
 type discordDB struct {
 	db *pgxpool.Pool
+	mu *sync.Mutex
 }
 
 func GetDatabaseInterface() DiscordDBInterface {
@@ -69,7 +71,10 @@ func NewDiscordDB(connection string) (DiscordDBInterface, error) {
 
 	logrus.Info("Successfully connected to the database")
 
-	discDB = discordDB{db: pool}
+	discDB = discordDB{
+		db: pool,
+		mu: &sync.Mutex{},
+	}
 
 	return discDB, nil
 }

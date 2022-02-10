@@ -3,7 +3,6 @@ package recurring
 import (
 	"github.com/ImTheTom/OtherProjects/discord-bot/internal/bot"
 	"github.com/ImTheTom/OtherProjects/discord-bot/internal/db"
-	"github.com/ImTheTom/OtherProjects/discord-bot/internal/helper"
 	"github.com/ImTheTom/OtherProjects/discord-bot/model"
 	"github.com/bwmarrin/discordgo"
 	"github.com/sirupsen/logrus"
@@ -16,7 +15,8 @@ const (
 
 var DBInt db.DiscordDBInterface
 
-func SyncUsers() bool {
+// Send only channel.
+func SyncUsers(syncUserCha chan<- model.User) bool {
 	logrus.Info("Syncing users now")
 
 	session := bot.GetSession()
@@ -30,8 +30,6 @@ func SyncUsers() bool {
 	}
 
 	guilds := state.Guilds
-
-	errored := false
 
 	for _, v := range guilds {
 		members, err := session.GuildMembers(v.ID, start, limit)
@@ -54,19 +52,14 @@ func SyncUsers() bool {
 				Nickname: mem.Nick,
 			}
 
-			err = DBInt.UpsertUser(helper.CreateContextWithTimeout(), user)
-			if err != nil {
-				logrus.Errorf("DB Upsert failed %v", err)
-
-				errored = true
-			}
+			syncUserCha <- user
 		}
 	}
 
-	return !errored
+	return true
 }
 
-func IncreasePoints() bool {
+func IncreasePoints(increasePointsCha chan<- model.User) bool {
 	logrus.Info("Increasing user points now")
 
 	session := bot.GetSession()
@@ -80,8 +73,6 @@ func IncreasePoints() bool {
 	}
 
 	guilds := state.Guilds
-
-	errored := false
 
 	for _, v := range guilds {
 		guildPresences := v.Presences
@@ -98,15 +89,10 @@ func IncreasePoints() bool {
 					GuildID: v.ID,
 				}
 
-				err := DBInt.IncreasePoints(helper.CreateContextWithTimeout(), user)
-				if err != nil {
-					logrus.Errorf("DB increase failed %v", err)
-
-					errored = true
-				}
+				increasePointsCha <- user
 			}
 		}
 	}
 
-	return !errored
+	return true
 }

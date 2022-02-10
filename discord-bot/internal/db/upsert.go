@@ -14,6 +14,8 @@ func (disDB discordDB) UpsertUser(ctx context.Context, user model.User) error {
 		return errNoDb
 	}
 
+	disDB.mu.Lock()
+
 	_, err := disDB.db.Exec(
 		ctx,
 		"INSERT INTO users(user_id,guild_id,username,nickname) VALUES ($1,$2,$3,$4) "+
@@ -23,6 +25,8 @@ func (disDB discordDB) UpsertUser(ctx context.Context, user model.User) error {
 		user.Username,
 		user.Nickname,
 	)
+
+	disDB.mu.Unlock()
 
 	return err
 }

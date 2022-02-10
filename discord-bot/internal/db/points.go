@@ -12,12 +12,16 @@ func (disDB discordDB) IncreasePoints(ctx context.Context, user model.User) erro
 		return errNoDb
 	}
 
+	disDB.mu.Lock()
+
 	_, err := currentDB.Exec(
 		ctx,
 		"UPDATE users SET points = points + 1 WHERE user_id = $1 AND guild_id = $2",
 		user.UserID,
 		user.GuildID,
 	)
+
+	disDB.mu.Unlock()
 
 	return err
 }
@@ -28,6 +32,8 @@ func (disDB discordDB) SetUserPoints(ctx context.Context, user model.User) error
 		return errNoDb
 	}
 
+	disDB.mu.Lock()
+
 	_, err := currentDB.Exec(
 		ctx,
 		"UPDATE users SET points = $1 WHERE user_id = $2 AND guild_id = $3",
@@ -35,6 +41,8 @@ func (disDB discordDB) SetUserPoints(ctx context.Context, user model.User) error
 		user.UserID,
 		user.GuildID,
 	)
+
+	disDB.mu.Unlock()
 
 	return err
 }
