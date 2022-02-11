@@ -31,7 +31,7 @@ func main() {
 
 	time.Sleep(sleepTime * time.Second)
 
-	if _, err := db.NewDiscordDB(config.GetConfig().DatabaseConnection); err != nil {
+	if err := db.NewDiscordDB(config.GetConfig().DatabaseConnection); err != nil {
 		logrus.Fatalf("Failed to connect to the db, restarting... %v", err)
 	}
 

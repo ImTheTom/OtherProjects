@@ -6,7 +6,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ImTheTom/OtherProjects/discord-bot/config"
 	"github.com/ImTheTom/OtherProjects/discord-bot/model"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/sirupsen/logrus"
@@ -19,6 +18,8 @@ const (
 
 var (
 	errFailedToConnect = errors.New("Failed to connect to db")
+
+	dbConnOnce sync.Once
 
 	discDB discordDB
 )
@@ -39,16 +40,20 @@ type discordDB struct {
 }
 
 func GetDatabaseInterface() DiscordDBInterface {
-	if discDB.db == nil {
-		if _, err := NewDiscordDB(config.GetConfig().DatabaseConnection); err != nil {
-			logrus.Errorf("Db connect errored %v", err)
-		}
-	}
-
 	return discDB
 }
 
-func NewDiscordDB(connection string) (DiscordDBInterface, error) {
+func NewDiscordDB(connection string) error {
+	var err error
+
+	dbConnOnce.Do(func() {
+		err = newDiscordDB(connection)
+	})
+
+	return err
+}
+
+func newDiscordDB(connection string) error {
 	var pool *pgxpool.Pool
 
 	var err error
@@ -66,7 +71,7 @@ func NewDiscordDB(connection string) (DiscordDBInterface, error) {
 	}
 
 	if err != nil {
-		return discordDB{db: nil}, errFailedToConnect
+		return errFailedToConnect
 	}
 
 	logrus.Info("Successfully connected to the database")
@@ -76,7 +81,7 @@ func NewDiscordDB(connection string) (DiscordDBInterface, error) {
 		mu: &sync.Mutex{},
 	}
 
-	return discDB, nil
+	return nil
 }
 
 func CloseDatabase() {
