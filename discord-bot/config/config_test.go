@@ -16,7 +16,7 @@ func setUp() {
 		Prefix:             "",
 	}
 
-	config.SetConfig(blankConfig)
+	config.SetConfig(&blankConfig)
 }
 
 func TestInit(t *testing.T) {

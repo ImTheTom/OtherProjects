@@ -8,7 +8,7 @@ import (
 	"github.com/jackc/pgx"
 )
 
-func (disDB discordDB) InsertGamble(ctx context.Context, gamble model.Gamble) error {
+func (disDB *discordDB) InsertGamble(ctx context.Context, gamble model.Gamble) error {
 	if disDB.db == nil {
 		return errNoDb
 	}
@@ -30,7 +30,7 @@ func (disDB discordDB) InsertGamble(ctx context.Context, gamble model.Gamble) er
 	return err
 }
 
-func (disDB discordDB) FindLatestGambleForUser(ctx context.Context, user model.User) (model.Gamble, error) {
+func (disDB *discordDB) FindLatestGambleForUser(ctx context.Context, user model.User) (model.Gamble, error) {
 	gamble := model.Gamble{}
 
 	err := disDB.db.QueryRow(

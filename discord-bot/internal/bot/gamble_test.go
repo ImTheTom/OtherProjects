@@ -29,7 +29,7 @@ var (
 )
 
 func TestMain(m *testing.M) {
-	bot.DBInt = db.MockDiscordDBInterface{}
+	bot.DBInt = &db.MockDiscordDBInterface{}
 	code := m.Run()
 	os.Exit(code)
 }

@@ -9,7 +9,7 @@ import (
 
 var errNoDb = errors.New("No database")
 
-func (disDB discordDB) UpsertUser(ctx context.Context, user model.User) error {
+func (disDB *discordDB) UpsertUser(ctx context.Context, user model.User) error {
 	if disDB.db == nil {
 		return errNoDb
 	}

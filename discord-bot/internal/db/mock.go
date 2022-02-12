@@ -31,7 +31,7 @@ var (
 	}
 )
 
-func (m MockDiscordDBInterface) UpsertUser(ctx context.Context, user model.User) error {
+func (m *MockDiscordDBInterface) UpsertUser(ctx context.Context, user model.User) error {
 	if user.UserID == "0" {
 		return errStand
 	}
@@ -39,7 +39,7 @@ func (m MockDiscordDBInterface) UpsertUser(ctx context.Context, user model.User)
 	return nil
 }
 
-func (m MockDiscordDBInterface) InsertGamble(ctx context.Context, gamble model.Gamble) error {
+func (m *MockDiscordDBInterface) InsertGamble(ctx context.Context, gamble model.Gamble) error {
 	if gamble.Amount == 1 {
 		return errStand
 	}
@@ -47,7 +47,7 @@ func (m MockDiscordDBInterface) InsertGamble(ctx context.Context, gamble model.G
 	return nil
 }
 
-func (m MockDiscordDBInterface) FindLatestGambleForUser(ctx context.Context, user model.User) (model.Gamble, error) {
+func (m *MockDiscordDBInterface) FindLatestGambleForUser(ctx context.Context, user model.User) (model.Gamble, error) {
 	if user.UserID == "0" {
 		return model.Gamble{}, errStand
 	}
@@ -62,7 +62,7 @@ func (m MockDiscordDBInterface) FindLatestGambleForUser(ctx context.Context, use
 	return standGamble, nil
 }
 
-func (m MockDiscordDBInterface) IncreasePoints(ctx context.Context, user model.User) error {
+func (m *MockDiscordDBInterface) IncreasePoints(ctx context.Context, user model.User) error {
 	if user.UserID == "0" {
 		return errStand
 	}
@@ -70,7 +70,7 @@ func (m MockDiscordDBInterface) IncreasePoints(ctx context.Context, user model.U
 	return nil
 }
 
-func (m MockDiscordDBInterface) SetUserPoints(ctx context.Context, user model.User) error {
+func (m *MockDiscordDBInterface) SetUserPoints(ctx context.Context, user model.User) error {
 	if user.UserID == "0" {
 		return errStand
 	}
@@ -78,7 +78,7 @@ func (m MockDiscordDBInterface) SetUserPoints(ctx context.Context, user model.Us
 	return nil
 }
 
-func (m MockDiscordDBInterface) FindByUserIDAndGuildID(
+func (m *MockDiscordDBInterface) FindByUserIDAndGuildID(
 	ctx context.Context, userID, guildID string,
 ) (model.User, error) {
 	if userID == "2" {
@@ -92,7 +92,7 @@ func (m MockDiscordDBInterface) FindByUserIDAndGuildID(
 	return result, nil
 }
 
-func (m MockDiscordDBInterface) FindTopTenPointsForAGuild(ctx context.Context, guildID string) ([]model.User, error) {
+func (m *MockDiscordDBInterface) FindTopTenPointsForAGuild(ctx context.Context, guildID string) ([]model.User, error) {
 	if guildID == "1" {
 		return []model.User{}, errStand
 	}

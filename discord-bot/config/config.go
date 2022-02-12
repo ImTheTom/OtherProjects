@@ -21,12 +21,12 @@ var (
 	errNoConfig  = errors.New("Can't find config file")
 )
 
-func GetConfig() Config {
-	return config
+func GetConfig() *Config {
+	return &config
 }
 
-func SetConfig(cfg Config) {
-	config = cfg
+func SetConfig(cfg *Config) {
+	config = *cfg
 }
 
 func Init() error {
@@ -44,10 +44,10 @@ func Init() error {
 		return err
 	}
 
-	return sanityCheckValues()
+	return config.sanityCheckValues()
 }
 
-func sanityCheckValues() error {
+func (c *Config) sanityCheckValues() error {
 	if len(config.BotToken) == 0 {
 		return errBadConfig
 	}

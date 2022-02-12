@@ -21,7 +21,7 @@ var (
 
 	dbConnOnce sync.Once
 
-	discDB discordDB
+	discDB *discordDB
 )
 
 type DiscordDBInterface interface {
@@ -76,7 +76,7 @@ func newDiscordDB(connection string) error {
 
 	logrus.Info("Successfully connected to the database")
 
-	discDB = discordDB{
+	discDB = &discordDB{
 		db: pool,
 		mu: &sync.Mutex{},
 	}
