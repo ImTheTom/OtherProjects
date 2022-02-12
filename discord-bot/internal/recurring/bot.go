@@ -16,7 +16,7 @@ const (
 var DBInt db.DiscordDBInterface
 
 // Send only channel.
-func SyncUsers(syncUserCha chan<- model.User) bool {
+func syncUsers(syncUserCha chan<- model.User) bool {
 	logrus.Info("Syncing users now")
 
 	session := bot.GetSession()
@@ -59,7 +59,7 @@ func SyncUsers(syncUserCha chan<- model.User) bool {
 	return true
 }
 
-func IncreasePoints(increasePointsCha chan<- model.User) bool {
+func increasePoints(increasePointsCha chan<- model.User) bool {
 	logrus.Info("Increasing user points now")
 
 	session := bot.GetSession()

@@ -16,7 +16,7 @@ const (
 	imageCommand = "image"
 )
 
-func ImageUploadMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
+func imageUploadMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// Ignore all messages created by the bot itself
 	if m.Author.ID == s.State.User.ID {
 		return

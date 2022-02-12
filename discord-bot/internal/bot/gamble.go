@@ -33,7 +33,7 @@ var (
 	errNoPoints            = errors.New("You have no points")
 )
 
-func GambleInteractions(s *discordgo.Session, m *discordgo.MessageCreate) {
+func gambleInteractions(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// Ignore all messages created by the bot itself
 	if m.Author.ID == s.State.User.ID {
 		return
@@ -47,11 +47,11 @@ func GambleInteractions(s *discordgo.Session, m *discordgo.MessageCreate) {
 	case fmt.Sprintf("%s%s", prefix, points):
 		called = true
 
-		PointsMessage(s, m)
+		pointsMessage(s, m)
 	case fmt.Sprintf("%s%s", prefix, leaderBoard):
 		called = true
 
-		LeaderBoardMessage(s, m)
+		leaderBoardMessage(s, m)
 	}
 
 	if called {
@@ -64,11 +64,11 @@ func GambleInteractions(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	if contentSplit[0] == fmt.Sprintf("%s%s", prefix, gamble) {
-		GamblePoints(s, m, contentSplit[1])
+		gamblePoints(s, m, contentSplit[1])
 	}
 }
 
-func PointsMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
+func pointsMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	logMessage(m)
 
 	ctx, cancel := helper.CreateContextWithTimeout()
@@ -87,7 +87,7 @@ func PointsMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	communicateStandardMessage(s, m, mess)
 }
 
-func LeaderBoardMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
+func leaderBoardMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	logMessage(m)
 
 	ctx, cancel := helper.CreateContextWithTimeout()
@@ -107,14 +107,14 @@ func LeaderBoardMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	communicateStandardMessage(s, m, totalMessage)
 }
 
-func GamblePoints(s *discordgo.Session, m *discordgo.MessageCreate, amountParam string) {
+func gamblePoints(s *discordgo.Session, m *discordgo.MessageCreate, amountParam string) {
 	logMessage(m)
 
 	ctx, cancel := helper.CreateContextWithTimeout()
 
 	defer cancel()
 
-	user, err := CheckGambleIsSane(ctx, m)
+	user, err := checkGambleIsSane(ctx, m)
 	if err != nil {
 		communicateStandardMessage(s, m, err.Error())
 
@@ -130,9 +130,9 @@ func GamblePoints(s *discordgo.Session, m *discordgo.MessageCreate, amountParam 
 	}
 
 	if amountParam == allPointsGamble {
-		currentPoints = CalulatePointsAll(ctx, user, winner)
+		currentPoints = calulatePointsAll(ctx, user, winner)
 	} else {
-		currentPoints, err = CalulatePointsLessThanAll(ctx, user, amountParam, winner)
+		currentPoints, err = calulatePointsLessThanAll(ctx, user, amountParam, winner)
 		if err != nil {
 			communicateStandardMessage(s, m, "Invalid gamble amount")
 
@@ -155,7 +155,7 @@ func GamblePoints(s *discordgo.Session, m *discordgo.MessageCreate, amountParam 
 	}
 }
 
-func CheckGambleIsSane(ctx context.Context, m *discordgo.MessageCreate) (model.User, error) {
+func checkGambleIsSane(ctx context.Context, m *discordgo.MessageCreate) (model.User, error) {
 	user, err := DBInt.FindByUserIDAndGuildID(
 		ctx, m.Author.ID, m.GuildID,
 	)
@@ -186,8 +186,8 @@ func CheckGambleIsSane(ctx context.Context, m *discordgo.MessageCreate) (model.U
 	return user, nil
 }
 
-func CalulatePointsAll(ctx context.Context, user model.User, winner bool) int {
-	_ = SaveGamble(ctx, user, user.Points, winner)
+func calulatePointsAll(ctx context.Context, user model.User, winner bool) int {
+	_ = saveGamble(ctx, user, user.Points, winner)
 
 	if winner {
 		return user.Points * allPointsGambleWin
@@ -196,7 +196,7 @@ func CalulatePointsAll(ctx context.Context, user model.User, winner bool) int {
 	return 0
 }
 
-func CalulatePointsLessThanAll(ctx context.Context, user model.User, amountParam string, winner bool) (int, error) {
+func calulatePointsLessThanAll(ctx context.Context, user model.User, amountParam string, winner bool) (int, error) {
 	currentPoints := 0
 
 	gambleAmount, err := strconv.Atoi(amountParam)
@@ -218,12 +218,12 @@ func CalulatePointsLessThanAll(ctx context.Context, user model.User, amountParam
 		currentPoints = user.Points - gambleAmount
 	}
 
-	_ = SaveGamble(ctx, user, gambleAmount, winner)
+	_ = saveGamble(ctx, user, gambleAmount, winner)
 
 	return currentPoints, nil
 }
 
-func SaveGamble(ctx context.Context, user model.User, amount int, winner bool) error {
+func saveGamble(ctx context.Context, user model.User, amount int, winner bool) error {
 	gm := model.Gamble{
 		UserID:    user.UserID,
 		GuildID:   user.GuildID,

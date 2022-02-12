@@ -1,11 +1,10 @@
-package bot_test
+package bot
 
 import (
 	"context"
 	"os"
 	"testing"
 
-	"github.com/ImTheTom/OtherProjects/discord-bot/internal/bot"
 	"github.com/ImTheTom/OtherProjects/discord-bot/internal/db"
 	"github.com/ImTheTom/OtherProjects/discord-bot/model"
 	"github.com/bwmarrin/discordgo"
@@ -29,7 +28,7 @@ var (
 )
 
 func TestMain(m *testing.M) {
-	bot.DBInt = &db.MockDiscordDBInterface{}
+	DBInt = &db.MockDiscordDBInterface{}
 	code := m.Run()
 	os.Exit(code)
 }
@@ -67,7 +66,7 @@ func TestSaveGamble(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := bot.SaveGamble(ctx, tt.args.user, tt.args.amount, tt.args.winner)
+			result := saveGamble(ctx, tt.args.user, tt.args.amount, tt.args.winner)
 			if tt.args.amount == 1 {
 				assert.NotNil(t, result)
 			} else {
@@ -163,7 +162,7 @@ func TestCalulatePointsLessThanAll(t *testing.T) { //nolint
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := bot.CalulatePointsLessThanAll(ctx, tt.args.user, tt.args.amountParam, tt.args.winner)
+			got, err := calulatePointsLessThanAll(ctx, tt.args.user, tt.args.amountParam, tt.args.winner)
 			if tt.ExpectError {
 				assert.NotNil(t, err)
 			} else {
@@ -212,7 +211,7 @@ func TestCalulatePointsAll(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := bot.CalulatePointsAll(ctx, tt.args.user, tt.args.winner)
+			got := calulatePointsAll(ctx, tt.args.user, tt.args.winner)
 			assert.Equal(t, tt.want, got)
 		})
 	}
@@ -239,7 +238,7 @@ func TestCheckGambleIsSane(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := bot.CheckGambleIsSane(ctx, tt.args.m)
+			_, err := checkGambleIsSane(ctx, tt.args.m)
 			if tt.wantErr {
 				assert.NotNil(t, err)
 			} else {

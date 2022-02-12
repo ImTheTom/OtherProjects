@@ -24,11 +24,11 @@ func Init() {
 		logrus.Fatalf("Discord session start failed, restarting... %v", err)
 	}
 
-	session.AddHandler(StandardChatMessages)
+	session.AddHandler(standardChatMessages)
 
-	session.AddHandler(ImageUploadMessage)
+	session.AddHandler(imageUploadMessage)
 
-	session.AddHandler(GambleInteractions)
+	session.AddHandler(gambleInteractions)
 
 	// Maybe revisit if needbe
 	session.Identify.Intents = discordgo.IntentsAll

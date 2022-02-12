@@ -20,11 +20,11 @@ func Init() {
 	syncUserChan = make(chan model.User, chanSize)
 
 	c := cron.New()
-	if _, err := c.AddFunc("@every 3m", func() { SyncUsers(syncUserChan) }); err != nil {
+	if _, err := c.AddFunc("@every 3m", func() { syncUsers(syncUserChan) }); err != nil {
 		logrus.Fatalf("Failed to add cron function, restarting... %v", err)
 	}
 
-	if _, err := c.AddFunc("@every 1m", func() { IncreasePoints(increasePointsChan) }); err != nil {
+	if _, err := c.AddFunc("@every 1m", func() { increasePoints(increasePointsChan) }); err != nil {
 		logrus.Fatalf("Failed to add cron function, restarting... %v", err)
 	}
 
@@ -38,8 +38,8 @@ func Init() {
 
 	logrus.Info("Starting consumers")
 
-	go ProcessSyncUsers(syncUserChan)
-	go ProcessIncreasePoints(increasePointsChan)
+	go processSyncUsers(syncUserChan)
+	go processIncreasePoints(increasePointsChan)
 }
 
 func Stop() {

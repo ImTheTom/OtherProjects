@@ -7,7 +7,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func ProcessSyncUsers(syncUserCha <-chan model.User) {
+func processSyncUsers(syncUserCha <-chan model.User) {
 	logrus.Info("Starting sync users channel consumption...")
 
 	ctx := context.Background()
@@ -21,7 +21,7 @@ func ProcessSyncUsers(syncUserCha <-chan model.User) {
 	}
 }
 
-func ProcessIncreasePoints(increasePointsCha <-chan model.User) {
+func processIncreasePoints(increasePointsCha <-chan model.User) {
 	logrus.Info("Starting increase users channel consumption...")
 
 	ctx := context.Background()
