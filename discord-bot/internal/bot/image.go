@@ -12,7 +12,8 @@ import (
 )
 
 const (
-	imagePath    = "./assets/images/"
+	imagePath = "./assets/images/"
+	// Sends a fun image. Send Tom suggestions.
 	imageCommand = "image"
 )
 

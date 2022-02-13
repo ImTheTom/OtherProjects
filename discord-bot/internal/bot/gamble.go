@@ -18,9 +18,12 @@ import (
 )
 
 const (
-	points      = "points"
-	leaderBoard = "ladder"
-	gamble      = "gamble"
+	// Will print out how many points the user has.
+	pointsCommand = "points"
+	// Prints out a leaderboard of the top 10 users in the channel.
+	ladderCommand = "ladder"
+	// Can gamble your points. Used by providing an additional paramater.
+	gambleCommand = "gamble"
 
 	allPointsGambleWin   = 2
 	numberOfGambleParams = 2
@@ -44,11 +47,11 @@ func gambleInteractions(s *discordgo.Session, m *discordgo.MessageCreate) {
 	called := false
 
 	switch m.Content {
-	case fmt.Sprintf("%s%s", prefix, points):
+	case fmt.Sprintf("%s%s", prefix, pointsCommand):
 		called = true
 
 		pointsMessage(s, m)
-	case fmt.Sprintf("%s%s", prefix, leaderBoard):
+	case fmt.Sprintf("%s%s", prefix, ladderCommand):
 		called = true
 
 		leaderBoardMessage(s, m)
@@ -63,7 +66,7 @@ func gambleInteractions(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	if contentSplit[0] == fmt.Sprintf("%s%s", prefix, gamble) {
+	if contentSplit[0] == fmt.Sprintf("%s%s", prefix, gambleCommand) {
 		gamblePoints(s, m, contentSplit[1])
 	}
 }

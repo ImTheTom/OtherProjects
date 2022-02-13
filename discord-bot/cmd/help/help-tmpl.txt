@@ -1,0 +1,34 @@
+// GENERATED CODE DO NOT EDIT
+// DO NOT EDIT
+// RE RUN ./scripts/regenerate.sh
+
+package {{.PackageName}}
+
+import (
+	"fmt"
+
+	"github.com/ImTheTom/OtherProjects/discord-bot/config"
+	"github.com/bwmarrin/discordgo"
+)
+
+const helpMessage = `{{.HelpMessage}}`
+
+var fullHelpMessage string
+
+func helpInteraction(s *discordgo.Session, m *discordgo.MessageCreate) {
+	// Ignore all messages created by the bot itself
+	if m.Author.ID == s.State.User.ID {
+		return
+	}
+
+	prefix := config.GetConfig().Prefix
+
+	if fullHelpMessage == "" {
+		fullHelpMessage = fmt.Sprintf("%s\n\nRemember to use your prefix - %s", helpMessage, prefix)
+	}
+
+	switch m.Content {
+	case fmt.Sprintf("%s%s", prefix, "help"):
+		communicateStandardMessage(s, m, fullHelpMessage)
+	}
+}

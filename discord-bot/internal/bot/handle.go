@@ -30,6 +30,8 @@ func Init() {
 
 	session.AddHandler(gambleInteractions)
 
+	session.AddHandler(helpInteraction)
+
 	// Maybe revisit if needbe
 	session.Identify.Intents = discordgo.IntentsAll
 

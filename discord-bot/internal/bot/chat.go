@@ -10,13 +10,20 @@ import (
 )
 
 const (
-	birthCommand  = "birth"
-	flipCommand   = "flip"
-	helloCommand  = "hello"
+	// Displays a fun message about when the bot was first created.
+	birthCommand = "birth"
+	// Flips a coin.
+	flipCommand = "flip"
+	// Prints a welcome message.
+	helloCommand = "hello"
+	// Displays a fun message about when you joined the guild.
 	joinedCommand = "joined"
-	louisCommand  = "louis"
-	pingCommand   = "ping"
-	rapCommand    = "rap"
+	// Prints out a message releating to Louis.
+	louisCommand = "louis"
+	// General ping command.
+	pingCommand = "ping"
+	// The famous rap command.
+	rapCommand = "rap"
 
 	randomUpperLimit = 2
 	hoursInADay      = 24

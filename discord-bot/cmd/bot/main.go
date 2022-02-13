@@ -19,13 +19,11 @@ const sleepTime = 5
 func main() {
 	rand.Seed(time.Now().UTC().UnixNano())
 
+	config.InitLogger()
+
 	if err := config.Init(); err != nil {
 		logrus.Fatalf("Config failed to init, restarting... %v", err)
 	}
-
-	logrus.Info("Setup config")
-
-	config.InitLogger()
 
 	logrus.Info("Finished configuration. Sleeping for 5 seconds before connecting to the db and discord...")
 
