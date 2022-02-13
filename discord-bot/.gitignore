@@ -6,3 +6,5 @@ config/config-dev.json
 assets/images/
 
 tmp.txt
+
+/gen-help
