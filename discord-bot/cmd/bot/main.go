@@ -37,7 +37,7 @@ func run() error {
 	time.Sleep(sleepTime * time.Second)
 
 	if err := db.NewDiscordDB(config.GetConfig().DatabaseConnection); err != nil {
-		return fmt.Errorf("Failed to connect to the db, restarting... %v", err)
+		return fmt.Errorf("Failed to connect to the db, restarting... %w", err)
 	}
 
 	logrus.Info("Running go routines")

@@ -7,6 +7,8 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+const userListSize = 10
+
 func (disDB *discordDB) FindByUserIDAndGuildID(ctx context.Context, userID, guildID string) (model.User, error) {
 	user := model.User{}
 	db := disDB.db
@@ -24,7 +26,7 @@ func (disDB *discordDB) FindByUserIDAndGuildID(ctx context.Context, userID, guil
 }
 
 func (disDB *discordDB) FindTopTenPointsForAGuild(ctx context.Context, guildID string) ([]model.User, error) {
-	users := make([]model.User, 0)
+	users := make([]model.User, userListSize)
 	db := disDB.db
 
 	rows, err := db.Query(
@@ -36,6 +38,8 @@ func (disDB *discordDB) FindTopTenPointsForAGuild(ctx context.Context, guildID s
 	if err != nil {
 		return users, err
 	}
+
+	i := 0
 
 	for rows.Next() {
 		var usr model.User
@@ -53,7 +57,8 @@ func (disDB *discordDB) FindTopTenPointsForAGuild(ctx context.Context, guildID s
 			continue
 		}
 
-		users = append(users, usr)
+		users[i] = usr
+		i++
 	}
 
 	return users, err

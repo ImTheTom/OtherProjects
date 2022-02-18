@@ -103,8 +103,11 @@ func leaderBoardMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	totalMessage := "Current ladder is.\n"
+
 	for i, v := range users {
-		totalMessage += fmt.Sprintf("%d - %s - %d\n", i+1, v.Username, v.Points)
+		if v.Username != "" {
+			totalMessage += fmt.Sprintf("%d - %s - %d\n", i+1, v.Username, v.Points)
+		}
 	}
 
 	communicateStandardMessage(s, m, totalMessage)
