@@ -15,8 +15,9 @@ type Config struct {
 
 const EnvConfigName = "CONFIG_LOCATION"
 
+var config Config
+
 var (
-	config       Config
 	errBadConfig = errors.New("Bad config was loaded in")
 	errNoConfig  = errors.New("Can't find config file")
 )

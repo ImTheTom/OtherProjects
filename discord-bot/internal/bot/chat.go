@@ -9,6 +9,13 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
+const randomUpperLimit = 2
+
+const (
+	hoursInADay = 24
+	layoutUS    = "January 2, 2006"
+)
+
 const (
 	// Displays a fun message about when the bot was first created.
 	birthCommand = "birth"
@@ -24,10 +31,6 @@ const (
 	pingCommand = "ping"
 	// The famous rap command.
 	rapCommand = "rap"
-
-	randomUpperLimit = 2
-	hoursInADay      = 24
-	layoutUS         = "January 2, 2006"
 )
 
 var louisQuotes = []string{

@@ -16,12 +16,11 @@ const (
 	sleepTime = 5
 )
 
+var errFailedToConnect = errors.New("Failed to connect to db")
+
 var (
-	errFailedToConnect = errors.New("Failed to connect to db")
-
 	dbConnOnce sync.Once
-
-	discDB *discordDB
+	discDB     *discordDB
 )
 
 type DiscordDBInterface interface {

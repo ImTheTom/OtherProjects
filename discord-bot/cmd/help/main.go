@@ -22,9 +22,9 @@ type tmpStruct struct {
 	HelpMessage string
 }
 
-var (
-	overalMap map[string]string
+var overalMap map[string]string
 
+var (
 	removeCommand = regexp.MustCompile("Command")
 	removeComment = regexp.MustCompile("// ")
 )

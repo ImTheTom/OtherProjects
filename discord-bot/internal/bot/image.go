@@ -11,11 +11,10 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-const (
-	imagePath = "./assets/images/"
-	// Sends a fun image. Send Tom suggestions.
-	imageCommand = "image"
-)
+const imagePath = "./assets/images/"
+
+// Sends a fun image. Send Tom suggestions.
+const imageCommand = "image"
 
 func imageUploadMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// Ignore all messages created by the bot itself

@@ -18,16 +18,18 @@ import (
 )
 
 const (
+	allPointsGambleWin   = 2
+	numberOfGambleParams = 2
+	allPointsGamble      = "all"
+)
+
+const (
 	// Will print out how many points the user has.
 	pointsCommand = "points"
 	// Prints out a leaderboard of the top 10 users in the channel.
 	ladderCommand = "ladder"
 	// Can gamble your points. Used by providing an additional paramater.
 	gambleCommand = "gamble"
-
-	allPointsGambleWin   = 2
-	numberOfGambleParams = 2
-	allPointsGamble      = "all"
 )
 
 var (
