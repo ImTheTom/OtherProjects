@@ -30,8 +30,6 @@ var (
 )
 
 func main() {
-	config.InitLogger()
-
 	logrus.Info("Generating help command code...")
 
 	packa := os.Args[1]

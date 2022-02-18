@@ -26,8 +26,6 @@ func main() {
 }
 
 func run() error {
-	config.InitLogger()
-
 	if err := config.Init(); err != nil {
 		return fmt.Errorf("Config failed to init, restarting... %w", err)
 	}

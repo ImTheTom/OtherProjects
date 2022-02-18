@@ -8,7 +8,9 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func InitLogger() {
+var _isLoggerReady = loggerSetup()
+
+func loggerSetup() bool {
 	logrus.SetReportCaller(true)
 
 	logrus.SetFormatter(&logrus.JSONFormatter{
@@ -20,4 +22,10 @@ func InitLogger() {
 	})
 
 	logrus.Info("Created logger")
+
+	return true
+}
+
+func IsLoggerReady() bool {
+	return _isLoggerReady
 }
