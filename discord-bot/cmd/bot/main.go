@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"math/rand"
 	"os"
 	"os/signal"
@@ -19,10 +20,16 @@ const sleepTime = 5
 func main() {
 	rand.Seed(time.Now().UTC().UnixNano())
 
+	if err := run(); err != nil {
+		logrus.Fatal(err)
+	}
+}
+
+func run() error {
 	config.InitLogger()
 
 	if err := config.Init(); err != nil {
-		logrus.Fatalf("Config failed to init, restarting... %v", err)
+		return fmt.Errorf("Config failed to init, restarting... %w", err)
 	}
 
 	logrus.Info("Finished configuration. Sleeping for 5 seconds before connecting to the db and discord...")
@@ -30,7 +37,7 @@ func main() {
 	time.Sleep(sleepTime * time.Second)
 
 	if err := db.NewDiscordDB(config.GetConfig().DatabaseConnection); err != nil {
-		logrus.Fatalf("Failed to connect to the db, restarting... %v", err)
+		return fmt.Errorf("Failed to connect to the db, restarting... %v", err)
 	}
 
 	logrus.Info("Running go routines")
@@ -47,4 +54,6 @@ func main() {
 	bot.CloseBot()
 	db.CloseDatabase()
 	recurring.Stop()
+
+	return nil
 }
