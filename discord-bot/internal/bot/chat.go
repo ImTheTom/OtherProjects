@@ -33,7 +33,7 @@ const (
 	rapCommand = "rap"
 )
 
-var louisQuotes = []string{
+var _louisQuotes = []string{
 	"Trying to solo carry",
 	"I carried",
 	"Give me my blue buff",
@@ -130,8 +130,8 @@ func helloMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 func louisMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	logMessage(m)
 
-	index := rand.Intn(len(louisQuotes) - 1)
-	communicateStandardMessage(s, m, louisQuotes[index])
+	index := rand.Intn(len(_louisQuotes) - 1)
+	communicateStandardMessage(s, m, _louisQuotes[index])
 }
 
 func pongMessage(s *discordgo.Session, m *discordgo.MessageCreate) {

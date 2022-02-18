@@ -22,7 +22,7 @@ type tmpStruct struct {
 	HelpMessage string
 }
 
-var overalMap map[string]string
+var _overalMap map[string]string
 
 var (
 	removeCommand = regexp.MustCompile("Command")
@@ -44,11 +44,11 @@ func main() {
 	}
 
 	// Create the map which will hold the information
-	overalMap = make(map[string]string)
+	_overalMap = make(map[string]string)
 
 	processDirectory(cwd)
 
-	logrus.Infof("%v", overalMap)
+	logrus.Infof("%v", _overalMap)
 
 	createFile(packa, templateLoc)
 }
@@ -128,7 +128,7 @@ func processConstantDeclartions(specs []ast.Spec) {
 		}
 
 		if constName != "" {
-			overalMap[constName] = constComment
+			_overalMap[constName] = constComment
 		}
 	}
 }
@@ -174,7 +174,7 @@ func createString() string {
 
 	final := "The bot has many commands to interact with here is the list:\n\n"
 
-	for k, v := range overalMap {
+	for k, v := range _overalMap {
 		final += fmt.Sprintf("%s%s - %s\n", prefix, k, v)
 	}
 

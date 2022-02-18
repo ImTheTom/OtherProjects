@@ -13,7 +13,7 @@ import (
 
 const helpMessage = `{{.HelpMessage}}`
 
-var fullHelpMessage string
+var _fullHelpMessage string
 
 func helpInteraction(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// Ignore all messages created by the bot itself
@@ -23,12 +23,12 @@ func helpInteraction(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	prefix := config.GetConfig().Prefix
 
-	if fullHelpMessage == "" {
-		fullHelpMessage = fmt.Sprintf("%s\n\nRemember to use your prefix - %s", helpMessage, prefix)
+	if _fullHelpMessage == "" {
+		_fullHelpMessage = fmt.Sprintf("%s\n\nRemember to use your prefix - %s", helpMessage, prefix)
 	}
 
 	switch m.Content {
 	case fmt.Sprintf("%s%s", prefix, "help"):
-		communicateStandardMessage(s, m, fullHelpMessage)
+		communicateStandardMessage(s, m, _fullHelpMessage)
 	}
 }

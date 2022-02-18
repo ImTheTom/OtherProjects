@@ -157,10 +157,12 @@ func gamblePoints(s *discordgo.Session, m *discordgo.MessageCreate, amountParam 
 	if winner {
 		winnerMessage := fmt.Sprintf("You won %s! Total points is now %d.", user.Username, user.Points)
 		communicateStandardMessage(s, m, winnerMessage)
-	} else {
-		loserMessage := fmt.Sprintf("You lost %s. Total points is now %d.", user.Username, user.Points)
-		communicateStandardMessage(s, m, loserMessage)
+
+		return
 	}
+
+	loserMessage := fmt.Sprintf("You lost %s. Total points is now %d.", user.Username, user.Points)
+	communicateStandardMessage(s, m, loserMessage)
 }
 
 func checkGambleIsSane(ctx context.Context, m *discordgo.MessageCreate) (model.User, error) {

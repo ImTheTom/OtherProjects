@@ -20,7 +20,7 @@ var errFailedToConnect = errors.New("Failed to connect to db")
 
 var (
 	dbConnOnce sync.Once
-	discDB     *discordDB
+	_discDB    *discordDB
 )
 
 type DiscordDBInterface interface {
@@ -39,7 +39,7 @@ type discordDB struct {
 }
 
 func GetDatabaseInterface() DiscordDBInterface {
-	return discDB
+	return _discDB
 }
 
 func NewDiscordDB(connection string) error {
@@ -75,7 +75,7 @@ func newDiscordDB(connection string) error {
 
 	logrus.Info("Successfully connected to the database")
 
-	discDB = &discordDB{
+	_discDB = &discordDB{
 		db: pool,
 		mu: sync.Mutex{},
 	}
@@ -84,7 +84,7 @@ func newDiscordDB(connection string) error {
 }
 
 func CloseDatabase() {
-	if discDB.db != nil {
-		discDB.db.Close()
+	if _discDB.db != nil {
+		_discDB.db.Close()
 	}
 }

@@ -15,7 +15,7 @@ type Config struct {
 
 const EnvConfigName = "CONFIG_LOCATION"
 
-var config Config
+var _config Config
 
 var (
 	errBadConfig = errors.New("Bad config was loaded in")
@@ -23,11 +23,11 @@ var (
 )
 
 func GetConfig() *Config {
-	return &config
+	return &_config
 }
 
 func SetConfig(cfg *Config) {
-	config = *cfg
+	_config = *cfg
 }
 
 func Init() error {
@@ -41,23 +41,23 @@ func Init() error {
 		return err
 	}
 
-	if err = json.Unmarshal(raw, &config); err != nil {
+	if err = json.Unmarshal(raw, &_config); err != nil {
 		return err
 	}
 
-	return config.sanityCheckValues()
+	return _config.sanityCheckValues()
 }
 
 func (c *Config) sanityCheckValues() error {
-	if len(config.BotToken) == 0 {
+	if len(_config.BotToken) == 0 {
 		return errBadConfig
 	}
 
-	if len(config.DatabaseConnection) == 0 {
+	if len(_config.DatabaseConnection) == 0 {
 		return errBadConfig
 	}
 
-	if len(config.Prefix) == 0 {
+	if len(_config.Prefix) == 0 {
 		return errBadConfig
 	}
 
