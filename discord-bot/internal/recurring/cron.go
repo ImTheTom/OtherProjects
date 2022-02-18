@@ -7,7 +7,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-const chanSize = 16
+const chanSize = 1
 
 var (
 	cro                *cron.Cron
