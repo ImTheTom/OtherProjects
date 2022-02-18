@@ -13,19 +13,19 @@ import (
 
 const helpMessage = `The bot has many commands to interact with here is the list:
 
-gamble - Can gamble your points. Used by providing an additional paramater.
-birth - Displays a fun message about when the bot was first created.
 flip - Flips a coin.
 hello - Prints a welcome message.
-points - Will print out how many points the user has.
-ladder - Prints out a leaderboard of the top 10 users in the channel.
-joined - Displays a fun message about when you joined the guild.
-louis - Prints out a message releating to Louis.
 ping - General ping command.
 rap - The famous rap command.
-image - Sends a fun image. Send Tom suggestions.`
+ladder - Prints out a leaderboard of the top 10 users in the channel.
+birth - Displays a fun message about when the bot was first created.
+louis - Prints out a message releating to Louis.
+points - Will print out how many points the user has.
+gamble - Can gamble your points. Used by providing an additional paramater.
+image - Sends a fun image. Send Tom suggestions.
+joined - Displays a fun message about when you joined the guild.`
 
-var fullHelpMessage string
+var _fullHelpMessage string
 
 func helpInteraction(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// Ignore all messages created by the bot itself
@@ -35,12 +35,12 @@ func helpInteraction(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	prefix := config.GetConfig().Prefix
 
-	if fullHelpMessage == "" {
-		fullHelpMessage = fmt.Sprintf("%s\n\nRemember to use your prefix - %s", helpMessage, prefix)
+	if _fullHelpMessage == "" {
+		_fullHelpMessage = fmt.Sprintf("%s\n\nRemember to use your prefix - %s", helpMessage, prefix)
 	}
 
 	switch m.Content {
 	case fmt.Sprintf("%s%s", prefix, "help"):
-		communicateStandardMessage(s, m, fullHelpMessage)
+		communicateStandardMessage(s, m, _fullHelpMessage)
 	}
 }
