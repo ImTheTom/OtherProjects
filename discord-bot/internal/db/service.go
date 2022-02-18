@@ -36,7 +36,7 @@ type DiscordDBInterface interface {
 
 type discordDB struct {
 	db *pgxpool.Pool
-	mu *sync.Mutex
+	mu sync.Mutex
 }
 
 func GetDatabaseInterface() DiscordDBInterface {
@@ -78,7 +78,7 @@ func newDiscordDB(connection string) error {
 
 	discDB = &discordDB{
 		db: pool,
-		mu: &sync.Mutex{},
+		mu: sync.Mutex{},
 	}
 
 	return nil
