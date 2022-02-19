@@ -43,9 +43,9 @@ func run() error {
 
 	logrus.Info("Running go routines")
 
-	go recurring.Init()
+	go recurring.Start()
 
-	go bot.Init()
+	go bot.Start()
 
 	sc := make(chan os.Signal, 1)
 

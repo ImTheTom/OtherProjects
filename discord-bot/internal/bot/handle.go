@@ -12,7 +12,7 @@ var (
 	DBInt db.DiscordDBInterface
 )
 
-func Init() {
+func Start() {
 	logrus.Info("Initialising bot and commands")
 
 	DBInt = db.GetDatabaseInterface()
@@ -50,7 +50,7 @@ func GetSession() *discordgo.Session {
 		return Sess
 	}
 
-	Init()
+	Start()
 
 	return Sess
 }

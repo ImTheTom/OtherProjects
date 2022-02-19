@@ -15,7 +15,7 @@ var (
 	syncUserChan       chan model.User
 )
 
-func Init() {
+func Start() {
 	increasePointsChan = make(chan model.User, chanSize)
 	syncUserChan = make(chan model.User, chanSize)
 
