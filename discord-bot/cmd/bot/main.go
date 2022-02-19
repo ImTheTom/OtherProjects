@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"math/rand"
 	"os"
@@ -17,6 +18,8 @@ import (
 
 const sleepTime = 5
 
+var errInvalidConfig = errors.New("Config failed to init correctly. Check previous logs")
+
 func main() {
 	rand.Seed(time.Now().UTC().UnixNano())
 
@@ -26,8 +29,8 @@ func main() {
 }
 
 func run() error {
-	if err := config.Init(); err != nil {
-		return fmt.Errorf("Config failed to init, restarting... %w", err)
+	if !config.IsConfigSetup() {
+		return errInvalidConfig
 	}
 
 	logrus.Info("Finished configuration. Sleeping for 5 seconds before connecting to the db and discord...")

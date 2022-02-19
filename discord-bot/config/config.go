@@ -5,6 +5,8 @@ import (
 	"errors"
 	"io/ioutil"
 	"os"
+
+	"github.com/sirupsen/logrus"
 )
 
 type Config struct {
@@ -15,7 +17,10 @@ type Config struct {
 
 const EnvConfigName = "CONFIG_LOCATION"
 
-var _config Config
+var (
+	_config       = SetupConfig()
+	isConfigSetup = false
+)
 
 var (
 	errBadConfig = errors.New("Bad config was loaded in")
@@ -30,34 +35,52 @@ func SetConfig(cfg *Config) {
 	_config = *cfg
 }
 
-func Init() error {
+func IsConfigSetup() bool {
+	return isConfigSetup
+}
+
+func SetupConfig() Config {
+	defaultConfig := Config{}
+
 	configFile := os.Getenv(EnvConfigName)
 	if len(configFile) == 0 {
-		return errNoConfig
+		logrus.Warn(errNoConfig)
+
+		return defaultConfig
 	}
 
 	raw, err := ioutil.ReadFile(configFile)
 	if err != nil {
-		return err
+		logrus.Warn(err)
+
+		return defaultConfig
 	}
 
-	if err = json.Unmarshal(raw, &_config); err != nil {
-		return err
+	if err = json.Unmarshal(raw, &defaultConfig); err != nil {
+		logrus.Warn(err)
+
+		return defaultConfig
 	}
 
-	return _config.sanityCheckValues()
+	if err = defaultConfig.sanityCheckValues(); err != nil {
+		isConfigSetup = false
+	} else {
+		isConfigSetup = true
+	}
+
+	return defaultConfig
 }
 
 func (c *Config) sanityCheckValues() error {
-	if len(_config.BotToken) == 0 {
+	if len(c.BotToken) == 0 {
 		return errBadConfig
 	}
 
-	if len(_config.DatabaseConnection) == 0 {
+	if len(c.DatabaseConnection) == 0 {
 		return errBadConfig
 	}
 
-	if len(_config.Prefix) == 0 {
+	if len(c.Prefix) == 0 {
 		return errBadConfig
 	}
 

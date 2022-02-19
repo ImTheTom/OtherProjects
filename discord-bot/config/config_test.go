@@ -47,7 +47,7 @@ func TestInit(t *testing.T) {
 			setUp()
 
 			os.Setenv(config.EnvConfigName, tt.fileLocation)
-			result := config.Init()
+			result := config.SetupConfig()
 			fmt.Printf("error %v\n", result)
 			if tt.exceptError {
 				assert.NotNil(t, result)
