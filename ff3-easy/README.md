@@ -1,1 +1,0 @@
-Started via https://khalilstemmler.com/blogs/typescript/node-starter-project/
