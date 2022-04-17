@@ -1,4 +1,4 @@
-package horse
+package race
 
 import (
 	"encoding/json"
@@ -17,7 +17,7 @@ type Horses struct {
 	Horses []Horse `json:"horses"`
 }
 
-const horsesLocation = "../pkg/horse/horses.json"
+const horsesLocation = "../pkg/race/horses.json"
 
 var loadedHorses = loadInHorses(horsesLocation)
 

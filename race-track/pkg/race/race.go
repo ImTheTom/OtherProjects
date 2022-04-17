@@ -2,15 +2,11 @@ package race
 
 import (
 	"errors"
-
-	"github.com/ImTheTom/OtherProjects/race-track/pkg/entrant"
-	"github.com/ImTheTom/OtherProjects/race-track/pkg/horse"
-	"github.com/ImTheTom/OtherProjects/race-track/pkg/jockey"
 )
 
 type Race struct {
 	Name     string
-	Entrants []*entrant.Entrant
+	Entrants []*Entrant
 	Distance float64
 	Step     int
 	Finished bool
@@ -28,17 +24,17 @@ const (
 var errNotEnough = errors.New("Not enough horses or jockeys")
 
 func CreateRace(numParticipants int, name string, distance float64) (*Race, error) {
-	if numParticipants > horse.GetTotalHorsesLoaded() || numParticipants > jockey.GetTotalJockeysLoaded() {
+	if numParticipants > GetTotalHorsesLoaded() || numParticipants > GetTotalJockeysLoaded() {
 		return nil, errNotEnough
 	}
 
-	entrants := make([]*entrant.Entrant, numParticipants)
+	entrants := make([]*Entrant, numParticipants)
 
 	for i := 0; i < numParticipants; i++ {
 		hrs := selectHorse(entrants)
 		jky := selectJockey(entrants)
 
-		ent := entrant.Entrant{
+		ent := Entrant{
 			Horse:     hrs,
 			Jockey:    jky,
 			Number:    i + 1,
@@ -59,13 +55,13 @@ func CreateRace(numParticipants int, name string, distance float64) (*Race, erro
 	return rc, nil
 }
 
-func selectHorse(ents []*entrant.Entrant) *horse.Horse {
+func selectHorse(ents []*Entrant) *Horse {
 	horseFound := false
 
-	var hrs *horse.Horse
+	var hrs *Horse
 
 	for !horseFound {
-		hrs = horse.GetRandomHorse()
+		hrs = GetRandomHorse()
 		horseFound = true
 
 		// Make sure it's unique
@@ -83,13 +79,13 @@ func selectHorse(ents []*entrant.Entrant) *horse.Horse {
 	return hrs
 }
 
-func selectJockey(ents []*entrant.Entrant) *jockey.Jockey {
+func selectJockey(ents []*Entrant) *Jockey {
 	jockeyFound := false
 
-	var jky *jockey.Jockey
+	var jky *Jockey
 
 	for !jockeyFound {
-		jky = jockey.GetRandomJockey()
+		jky = GetRandomJockey()
 		jockeyFound = true
 
 		// Make sure it's unique

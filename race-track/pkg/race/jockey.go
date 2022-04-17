@@ -1,4 +1,4 @@
-package jockey
+package race
 
 import (
 	"encoding/json"
@@ -17,7 +17,7 @@ type Jockeys struct {
 	Jockeys []Jockey `json:"jockeys"`
 }
 
-const jockeyLocation = "../pkg/jockey/jockey.json"
+const jockeyLocation = "../pkg/race/jockey.json"
 
 var loadedJockeys = loadInJockeys(jockeyLocation)
 
