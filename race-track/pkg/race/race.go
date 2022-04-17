@@ -5,6 +5,7 @@ import (
 )
 
 type Race struct {
+	ID       int
 	Name     string
 	Entrants []*Entrant
 	Distance float64
@@ -20,6 +21,8 @@ const (
 const (
 	TwoHorseRace = 2
 )
+
+var currentRaceID int
 
 var errNotEnough = errors.New("Not enough horses or jockeys")
 
@@ -46,11 +49,14 @@ func CreateRace(numParticipants int, name string, distance float64) (*Race, erro
 	}
 
 	rc := &Race{
+		ID:       currentRaceID,
 		Name:     name,
 		Entrants: entrants,
 		Distance: distance,
 		Step:     0,
 	}
+
+	currentRaceID++
 
 	return rc, nil
 }
