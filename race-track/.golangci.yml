@@ -1,0 +1,54 @@
+linters:
+  enable:
+  - deadcode
+  - errcheck
+  - gosimple
+  - govet
+  - ineffassign
+  - staticcheck
+  - structcheck
+  - typecheck
+  - unused
+  - varcheck
+  - asciicheck
+  - bodyclose
+  - cyclop
+  - dupl
+  - durationcheck
+  - errorlint
+  - exhaustive
+  - exportloopref
+  - forcetypeassert
+  - funlen
+  - goconst
+  - gocritic
+  - godot
+  - godox
+  - goerr113
+  - gofmt
+  - gofumpt
+  - goheader
+  - goimports
+  - gomnd
+  - goprintffuncname
+  - ifshort
+  - lll
+  - makezero
+  - misspell
+  - nestif
+  - nilerr
+  - nlreturn
+  - nolintlint
+  - prealloc
+  - revive
+  - unconvert
+  - unparam
+  - wastedassign
+  - wsl
+  - whitespace
+linters-settings:
+  goconst:
+    min-len: 2
+    min-occurences: 2
+  misspell:
+    locale: UK
