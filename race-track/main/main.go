@@ -1,7 +1,17 @@
 package main
 
-import "fmt"
+import (
+	"log"
+	"math/rand"
+	"time"
+
+	"github.com/ImTheTom/OtherProjects/race-track/pkg/logic"
+)
 
 func main() {
-	fmt.Println("HELLO")
+	rand.Seed(time.Now().Unix())
+
+	if err := logic.LoadInData(); err != nil {
+		log.Fatal(err)
+	}
 }
