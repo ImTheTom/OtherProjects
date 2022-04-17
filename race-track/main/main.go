@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/ImTheTom/OtherProjects/race-track/pkg/logic"
+	"github.com/ImTheTom/OtherProjects/race-track/pkg/race"
 )
 
 func main() {
@@ -14,4 +15,11 @@ func main() {
 	if err := logic.LoadInData(); err != nil {
 		log.Fatal(err)
 	}
+
+	rc, err := race.CreateRace(1, "new")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	log.Println(rc)
 }

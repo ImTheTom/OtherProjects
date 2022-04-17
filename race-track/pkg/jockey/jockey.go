@@ -1,6 +1,8 @@
 package jockey
 
-import "math/rand"
+import (
+	"math/rand"
+)
 
 type Jockey struct {
 	Name   string  `json:"name"`

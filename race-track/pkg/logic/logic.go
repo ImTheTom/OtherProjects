@@ -2,6 +2,7 @@ package logic
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"os"
 
@@ -50,5 +51,9 @@ func loadInDataSpecified(fileLocation string, loadVar interface{}) error {
 		return err
 	}
 
-	return json.Unmarshal(byteValue, &loadVar)
+	err = json.Unmarshal(byteValue, &loadVar)
+
+	fmt.Sprintln("HELLO")
+
+	return err
 }
