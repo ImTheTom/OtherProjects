@@ -17,7 +17,7 @@ type Horses struct {
 	Horses []Horse `json:"horses"`
 }
 
-const horsesLocation = "./pkg/horse/horses.json"
+const horsesLocation = "../pkg/horse/horses.json"
 
 var loadedHorses = loadInHorses(horsesLocation)
 
@@ -25,8 +25,8 @@ func GetLoadedHorsesVar() Horses {
 	return loadedHorses
 }
 
-func GetRandomHorse() Horse {
-	return loadedHorses.Horses[rand.Intn(GetTotalHorsesLoaded())]
+func GetRandomHorse() *Horse {
+	return &loadedHorses.Horses[rand.Intn(GetTotalHorsesLoaded())]
 }
 
 func GetTotalHorsesLoaded() int {

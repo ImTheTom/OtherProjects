@@ -6,7 +6,9 @@ import (
 )
 
 type Entrant struct {
-	Horse  horse.Horse
-	Jockey jockey.Jockey
-	Number int
+	Horse     *horse.Horse
+	Jockey    *jockey.Jockey
+	Number    int
+	Position  int
+	Travelled float64
 }

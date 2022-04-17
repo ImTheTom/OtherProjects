@@ -3,6 +3,10 @@
 		{
 			"name": "Thunder",
 			"speed": 5.5
+		},
+		{
+			"name": "Seattle Slew",
+			"speed": 5.7
 		}
 	]
 }

@@ -17,7 +17,7 @@ type Jockeys struct {
 	Jockeys []Jockey `json:"jockeys"`
 }
 
-const jockeyLocation = "./pkg/jockey/jockey.json"
+const jockeyLocation = "../pkg/jockey/jockey.json"
 
 var loadedJockeys = loadInJockeys(jockeyLocation)
 
@@ -25,8 +25,8 @@ func GetLoadedJockeysVar() Jockeys {
 	return loadedJockeys
 }
 
-func GetRandomJockey() Jockey {
-	return loadedJockeys.Jockeys[rand.Intn(GetTotalJockeysLoaded())]
+func GetRandomJockey() *Jockey {
+	return &loadedJockeys.Jockeys[rand.Intn(GetTotalJockeysLoaded())]
 }
 
 func GetTotalJockeysLoaded() int {
