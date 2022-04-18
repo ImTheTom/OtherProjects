@@ -7,6 +7,30 @@
 		{
 			"name": "Calvin Borel",
 			"weight": 56.2
+		},
+		{
+			"name": "Fred Archer",
+			"weight": 55.2
+		},
+		{
+			"name": "Frankie Dettori",
+			"weight": 60.2
+		},
+		{
+			"name": "Tony McCoy",
+			"weight": 58.3
+		},
+		{
+			"name": "Julie Krone",
+			"weight": 53.8
+		},
+		{
+			"name": "Olivier Peslier",
+			"weight": 54.9
+		},
+		{
+			"name": "Christophe Soumillon",
+			"weight": 55.1
 		}
 	]
 }

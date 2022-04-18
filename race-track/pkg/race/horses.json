@@ -7,6 +7,30 @@
 		{
 			"name": "Seattle Slew",
 			"speed": 5.7
+		},
+		{
+			"name": "Man o' War",
+			"speed": 5.0
+		},
+		{
+			"name": "Red Rum",
+			"speed": 5.2
+		},
+		{
+			"name": "Kelso",
+			"speed": 6.0
+		},
+		{
+			"name": "Native Dancer",
+			"speed": 6.3
+		},
+		{
+			"name": "Bronco",
+			"speed": 5.6
+		},
+		{
+			"name": "Cherish",
+			"speed": 5.5
 		}
 	]
 }
