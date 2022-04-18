@@ -133,7 +133,9 @@ func gamblePoints(s *discordgo.Session, m *discordgo.MessageCreate, amountParam 
 
 	var currentPoints int
 
-	if value := rand.Intn(randomUpperLimit); value == 0 {
+	rand.Seed(time.Now().UTC().UnixNano())
+
+	if value := rand.Intn(randomUpperLimit); value == 1 {
 		winner = true
 	}
 

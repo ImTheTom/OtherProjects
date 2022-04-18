@@ -19,6 +19,8 @@ services:
     image: postgres:13.2-alpine
     environment:
       POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - 5433:5432
     volumes:
       - discord-data:/var/lib/postgresql/data/
       - ../postgres/:/docker-entrypoint-initdb.d/

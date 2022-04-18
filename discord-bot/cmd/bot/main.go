@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"math/rand"
 	"os"
 	"os/signal"
 	"syscall"
@@ -21,8 +20,6 @@ const sleepTime = 5
 var errInvalidConfig = errors.New("Config failed to init correctly. Check previous logs")
 
 func main() {
-	rand.Seed(time.Now().UTC().UnixNano())
-
 	if err := run(); err != nil {
 		logrus.Fatal(err)
 	}

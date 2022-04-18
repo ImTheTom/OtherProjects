@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"os"
+	"time"
 
 	"github.com/ImTheTom/OtherProjects/discord-bot/config"
 	"github.com/bwmarrin/discordgo"
@@ -40,6 +41,8 @@ func imageMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 		return
 	}
+
+	rand.Seed(time.Now().UTC().UnixNano())
 
 	index := rand.Intn(len(files))
 

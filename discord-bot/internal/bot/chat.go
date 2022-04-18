@@ -113,6 +113,8 @@ func flipMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	message := "Heads"
 
+	rand.Seed(time.Now().UTC().UnixNano())
+
 	if value := rand.Intn(randomUpperLimit); value == 0 {
 		message = "Tails"
 	}
@@ -129,6 +131,8 @@ func helloMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 func louisMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 	logMessage(m)
+
+	rand.Seed(time.Now().UTC().UnixNano())
 
 	index := rand.Intn(len(_louisQuotes) - 1)
 	communicateStandardMessage(s, m, _louisQuotes[index])
