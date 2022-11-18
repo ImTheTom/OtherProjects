@@ -17,6 +17,8 @@ type trackerDB struct {
 }
 
 func NewTracker() (TrackerDB, error) {
+	log.Println("opening db")
+
 	db, err := sql.Open("sqlite3", dbName)
 	if err != nil {
 		return nil, err
