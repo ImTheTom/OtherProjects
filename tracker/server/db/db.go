@@ -3,6 +3,7 @@ package db
 import (
 	"database/sql"
 	"log"
+	"tracker/models"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -10,6 +11,7 @@ import (
 const dbName = "tracker.db"
 
 type TrackerDB interface {
+	CreateTrack(req *models.CreateTrackRequest) error
 }
 
 type trackerDB struct {
@@ -24,7 +26,7 @@ func NewTracker() (TrackerDB, error) {
 		return nil, err
 	}
 
-	if _, err := db.Exec(create); err != nil {
+	if _, err := db.Exec(createTableQuery); err != nil {
 		return nil, err
 	}
 
@@ -33,4 +35,9 @@ func NewTracker() (TrackerDB, error) {
 	return &trackerDB{
 		db: db,
 	}, nil
+}
+
+func (d *trackerDB) CreateTrack(req *models.CreateTrackRequest) error {
+	_, err := d.db.Exec(createTrackQuery, req.Urge, req.Need, req.CreateTime)
+	return err
 }
