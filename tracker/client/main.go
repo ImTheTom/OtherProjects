@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-type CreateTokenRequest struct {
+type CreateTrackRequest struct {
 	Urge       int       `json:"urge"`
 	Need       int       `json:"need"`
 	CreateTime time.Time `json:"create_time"`
@@ -39,7 +39,7 @@ func main() {
 		return
 	}
 
-	_ = CreateTokenRequest{
+	_ = CreateTrackRequest{
 		Urge:       urge,
 		Need:       need,
 		CreateTime: time.Now().In(loc),

@@ -3,9 +3,11 @@ package service
 import (
 	"log"
 	"tracker/db"
+	"tracker/models"
 )
 
 type TrackerService interface {
+	CreateTrack(req *models.CreateTrackRequest) error
 }
 
 type trackerService struct {
@@ -20,4 +22,8 @@ func NewTracker(
 	return &trackerService{
 		dbRepo: db,
 	}
+}
+
+func (s *trackerService) CreateTrack(req *models.CreateTrackRequest) error {
+	return nil
 }
